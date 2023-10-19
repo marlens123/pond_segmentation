@@ -1,0 +1,24 @@
+This repository can be used for the segmentation of airborne infrared images.
+Contains annotation steps, preprocessing, model training, and prediction.
+Melt ponds are characteristics...
+The dataset...
+Uses a Unet with ResNet34 backbone, pre-trained on ImageNet.
+
+Information about hyperparameters are given in training_sample.ipynb
+
+# Overview
+folders
+
+# Setup
+pip install requirements
+
+# Structure
+
+# Disclaimer
+Extended code of my Bachelor thesis, supervisors...
+
+# External Resources
+- ImageNet
+- Unet
+- segmentation_models
+- wandb
