@@ -34,7 +34,7 @@ This code runs on Python 3.10. For installing the required packages, use ```pip 
 The data used is not published yet.
 
 ### Disclaimer
-The project is the extended version of my Bachelor thesis under supervision of Dr. Gunnar Spreen (Polar Remote Sensing Group, University of Bremen)
+The project is the extended version of my Bachelor thesis under the supervision of Dr. Gunnar Spreen (Polar Remote Sensing Group, University of Bremen)
 and Dr. Ulf Krumnack (Computer Vision Group, University of Osnabrück; submission 08/2023).
 
 ### References
