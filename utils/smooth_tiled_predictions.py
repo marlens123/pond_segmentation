@@ -1,4 +1,3 @@
-
 # source of this file: https://github.com/bnsreenu/python_for_microscopists/tree/master/229_smooth_predictions_by_blending_patches
 # https://youtu.be/HrGn4uFrMOM
 
@@ -18,13 +17,10 @@ unnecessary for smooth tiling are removed.
 """
 """Perform smooth predictions on an image from tiled prediction patches."""
 
-
 import numpy as np
 import scipy.signal
 from tqdm import tqdm
-
 import gc
-
 
 if __name__ == '__main__':
     import matplotlib.pyplot as plt

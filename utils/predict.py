@@ -14,7 +14,7 @@ from utils.smooth_tiled_predictions import predict_img_with_smooth_windowing
 
 def visualize_ir(img, idx=None, cmap='cividis', colorbar=False, save_path=None):
     """
-    For visualization of ir images
+    For visualization of ir images.
     """
     plt.imshow(img, cmap=cmap)
 
@@ -27,7 +27,7 @@ def visualize_ir(img, idx=None, cmap='cividis', colorbar=False, save_path=None):
 
 def expand_greyscale_channels(image):
     """
-    copies last channel three times to reach RGB-like shape
+    Copies last channel three times to reach RGB-like shape.
     """
     image = np.expand_dims(image, -1)
     image = image.repeat(3, axis=-1)
@@ -36,7 +36,7 @@ def expand_greyscale_channels(image):
 
 def crop_center_square(image, im_size=480):
     """"
-    Crops the center of the input image with specified size
+    Crops the center of the input image with specified size.
     """
     size=im_size
     height, width = image.shape[:2]
@@ -50,7 +50,7 @@ def crop_center_square(image, im_size=480):
 
 def label_to_pixelvalue(image):
     """
-    transforms class labels to pixelvalues in the grayscale range to be able to make outcomes visible
+    Transforms class labels to pixelvalues in the grayscale range to be able to make outcomes visible.
     """
     uniques = np.unique(image)
     
@@ -63,7 +63,7 @@ def label_to_pixelvalue(image):
 
 def preprocess_prediction(image, model_preprocessing, smooth=False):
     """
-    Preprocesses image to be suitable as input for model prediction
+    Preprocesses image to be suitable as input for model prediction.
     """
 
     image = expand_greyscale_channels(image)
@@ -89,7 +89,6 @@ def patch_predict(model, image, patch_size, model_preprocessing, visualize=True)
     
     This function is inspired by
     https://github.com/bnsreenu/python_for_microscopists/blob/master/206_sem_segm_large_images_using_unet_with_custom_patch_inference.py
-    
     """
 
     # initialize mask with zeros
@@ -142,7 +141,7 @@ def smooth_patch_predict(model, image, patch_size, model_preprocessing, smooth, 
 
 def predict_image(img, im_size, weights, backbone='resnet34', train_transfer='imagenet', smooth=False, save_path=None, visualize=True):
     """
-    preprocesses image for prediction, loads model with weights and uses model to predict segmentation mask
+    Preprocesses image for prediction, loads model with weights and uses model to predict segmentation mask.
     """
     BACKBONE = backbone
     TRAIN_TRANSFER = train_transfer

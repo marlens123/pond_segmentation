@@ -20,10 +20,9 @@ from sklearn.model_selection import KFold
 import models.segmentation_models_qubvel as sm
 from models.segmentation_models_qubvel.segmentation_models.utils import set_trainable
 
-#import wandb
-#wandb.init(project="extended")
-#from wandb.keras import WandbMetricsLogger
-#wandb.login()
+import wandb
+wandb.login()
+from wandb.keras import WandbMetricsLogger
 
 from timeit import default_timer as timer
 
@@ -162,7 +161,7 @@ def run_train(X_train, y_train, X_test, y_test, model, pref, backbone='resnet34'
             keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
             keras.callbacks.EarlyStopping(patience=10),
             TimingCallback(),
-            #WandbMetricsLogger()
+            WandbMetricsLogger()
         ]
 
     else:
@@ -170,7 +169,7 @@ def run_train(X_train, y_train, X_test, y_test, model, pref, backbone='resnet34'
         callbacks = [
             keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
             TimingCallback(),
-            #WandbMetricsLogger()
+            WandbMetricsLogger()
         ]
 
 
@@ -302,9 +301,6 @@ def train_wrapper(X, y, im_size, base_pref, backbone='resnet34', loss='categoric
 
     print(type(model))
     print(model.summary())
-
-    #dot_img_file = './summary/model_dropout.png'
-    #tf.keras.utils.plot_model(model, to_file=dot_img_file, show_shapes=True, dpi=300)
 
 
     #################################################################
@@ -449,8 +445,8 @@ def train_wrapper(X, y, im_size, base_pref, backbone='resnet34', loss='categoric
         ##########################################
         ############# Tracking Config ############
         ##########################################
-        """
-        run = wandb.init(project='extended',
+
+        run = wandb.init(project='pond_segmentation',
                             group=base_pref,
                             name='foldn_{}'.format(fold_no),
                             config={
@@ -465,7 +461,6 @@ def train_wrapper(X, y, im_size, base_pref, backbone='resnet34', loss='categoric
         config = wandb.config
 
         print("Test set size...", X_test.shape)
-        """
 
         ##########################################
         ################ Training ################
@@ -492,7 +487,7 @@ def train_wrapper(X, y, im_size, base_pref, backbone='resnet34', loss='categoric
         time_per_fold.append(sum(time))
 
         # close run for that fold
-        #wandb.join()
+        wandb.join()
 
         # Increase fold number
         fold_no = fold_no + 1
@@ -615,7 +610,7 @@ def final_train(X_train, y_train, X_test, y_test, im_size, base_pref, backbone='
     model = sm.Unet(BACKBONE, input_shape=(im_size, im_size, 3), classes=3, activation='softmax', encoder_weights=TRAIN_TRANSFER,
                     decoder_use_dropout=use_dropout, decoder_use_batchnorm=use_batchnorm, encoder_freeze=encoder_freeze)  
 
-    print(model.summary())           
+    print(model.summary())         
 
     ##########################################
     ################# Prefix #################
@@ -731,8 +726,8 @@ def final_train(X_train, y_train, X_test, y_test, im_size, base_pref, backbone='
     ##########################################
     ############# Tracking Config ############
     ##########################################
-    """
-    run = wandb.init(project='extended',
+
+    run = wandb.init(project='pond_segmentation',
                         group=base_pref,
                         name=base_pref,
                         config={
@@ -745,7 +740,6 @@ def final_train(X_train, y_train, X_test, y_test, im_size, base_pref, backbone='
                         }
     )
     config = wandb.config
-    """
 
     print("Test set size...", X_test.shape)
 
@@ -757,7 +751,7 @@ def final_train(X_train, y_train, X_test, y_test, im_size, base_pref, backbone='
                                 backbone=BACKBONE, batch_size=BATCH_SIZE, fold_no=0, optimizer=optimizer, loss=loss, class_weights=class_weights,
                                 input_normalize=input_normalize, final_run=True, freeze_tune=freeze_tune, early_stop=early_stop)
     
-    #wandb.join()
+    wandb.join()
 
     val_iou_all = history
     time_list = []
