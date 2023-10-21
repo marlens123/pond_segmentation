@@ -9,11 +9,6 @@ The data used is not published yet.
 ### Setup
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
 
-### Quickstart
-If you want to use the current optimized model for inference on an image, use the following:
-
-```python -m utils.predict image```.
-
 ### Content
 This repository covers annotation, preprocessing, training, hyperparameter optimization, and prediction procedures. More information in the respective notebook headers.
 
