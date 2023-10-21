@@ -45,7 +45,7 @@ Infrared imagery can be used to derive melt pond parameters and thermal properti
 *first column - input flight 9, second column - results flight 9, third column - input flight 16, fourth column - results flight 16. Grey - sea ice, black - melt ponds, white - ocean.*
 
 ### Disclaimer
-The project is the extended version of my Bachelor thesis under the supervision of Dr. Gunnar Spreen ([Polar Remote Sensing Group, University of Bremen](https://seaice.uni-bremen.de/research-group/))
+The project is the extended version of my Bachelor thesis under the supervision of Dr. Gunnar Spreen ([Polar Remote Sensing Group](https://seaice.uni-bremen.de/research-group/), University of Bremen)
 and Dr. Ulf Krumnack ([Computer Vision Group](https://www.ikw.uni-osnabrueck.de/en/research_groups/computer_vision.html), University of Osnabrück).
 
 ### References
