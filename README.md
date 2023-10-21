@@ -58,4 +58,5 @@ and Dr. Ulf Krumnack ([Computer Vision Group](https://www.ikw.uni-osnabrueck.de/
 Fram Strait in 2022. Ed. by Horst Bornemann and Susan Amir Sawadkuhi. Bremerhaven. DOI: 10.57738/BzPM\_0770\_2023.
 
 
-Contact: mareil@uni-osnabrueck.de
+### Contact
+mareil@uni-osnabrueck.de
