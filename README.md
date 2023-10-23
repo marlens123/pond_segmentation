@@ -1,13 +1,18 @@
 # Detection of Melt Ponds on Arctic Sea Ice from Infrared Images
 
 This repository develops a segmentation tool that partitions helicopter-borne thermal infrared (TIR) images into sea ice, melt pond, and ocean classes. 
-The data used were aquired during the PSP131 ATWAICE campaign [1].
+The data used were aquired during the PSP131 ATWAICE campaign [1]. All training images and masks can be investigated in ```preprocessing_sample.ipynb```.
 The model is a U-net with ResNet34 backbone, pretrained on ImageNet. Current work focusses on the integration of visual imagery into the training.
 
 The data used is not published yet.
 
 ### Setup
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
+
+### Quickstart
+If you want to use the current optimized model for inference on an image, use the following:
+
+```python -m utils.predict image```.
 
 ### Content
 This repository covers annotation, preprocessing, training, hyperparameter optimization, and prediction procedures. More information in the respective notebook headers.
@@ -25,6 +30,8 @@ This repository covers annotation, preprocessing, training, hyperparameter optim
 ```docs/```: annotation documentation.
 
 ```models/```: pre-trained [segmentation models](https://github.com/qubvel/segmentation_models).
+
+```scores/```: model scores stored after training.
 
 ```utils/```: functions needed for preprocessing, training, prediction.
 
