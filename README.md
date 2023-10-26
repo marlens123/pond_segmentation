@@ -6,7 +6,7 @@ The model is a U-net with ResNet34 backbone, pretrained on ImageNet. Current wor
 
 The data used is not published yet.
 
-![example](tweet_figure.PNG)
+![tweet_figure](https://github.com/marlens123/pond_segmentation/assets/80780236/5a7b89cd-1fc3-4d33-a498-9effd62d5c79)
 
 ### Setup
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
