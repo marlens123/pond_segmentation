@@ -12,9 +12,13 @@ This code requires Python 3.10. Install the required packages using ```pip insta
 ### Quickstart
 If you want to use the current optimized model for inference on an image, use the following:
 
-```python -m utils.predict image```.
+(in progress...)```python -m utils.predict image```.
 
-### Content
+To fine-tune the model using different hyperparameters or training data:
+
+```python fine_tune.py --pref [pref_name]```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/``` will be used.
+
+### Additional Files
 This repository covers annotation, preprocessing, training, hyperparameter optimization, and prediction procedures. More information in the respective notebook headers.
 
 ```extract_and_annotate.ipynb```: image extraction and preparation for annotation.
