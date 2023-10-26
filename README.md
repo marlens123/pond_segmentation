@@ -6,6 +6,8 @@ The model is a U-net with ResNet34 backbone, pretrained on ImageNet. Current wor
 
 The data used is not published yet.
 
+![example](tweet_figure.PNG)
+
 ### Setup
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
 
@@ -50,10 +52,6 @@ Infrared imagery can be used to derive melt pond parameters and thermal properti
 <img scr="https://github.com/marlens123/ponds_extended/assets/80780236/84dde17c-6ecd-4608-af7f-7be75de84729" width="200">
 
 ![model_architecture|50%](https://github.com/marlens123/ponds_extended/assets/80780236/84dde17c-6ecd-4608-af7f-7be75de84729)
-
-### Current Results
-![quali_old](https://github.com/marlens123/pond_segmentation/assets/80780236/7228e021-4630-4367-a4c8-e30b2fdfb3da)
-*first column - input flight 9, second column - results flight 9, third column - input flight 16, fourth column - results flight 16. Grey - sea ice, black - melt ponds, white - ocean.*
 
 ### Disclaimer
 The project is the extended version of my Bachelor thesis under the supervision of Dr. Gunnar Spreen ([Polar Remote Sensing Group](https://seaice.uni-bremen.de/research-group/), University of Bremen)
