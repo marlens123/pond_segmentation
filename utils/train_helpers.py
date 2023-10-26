@@ -9,9 +9,11 @@ import os
 
 def compute_class_weights(train_masks):
     masks_resh = train_masks.reshape(-1,1)
+    print(masks_resh.shape)
     masks_resh_list = masks_resh.flatten().tolist()
+    print(len(masks_resh_list))
     class_weights = class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(masks_resh), y=masks_resh_list)
-    
+    print(class_weights.shape)
     return class_weights
 
 
