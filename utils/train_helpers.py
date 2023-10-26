@@ -2,14 +2,35 @@ import numpy as np
 from patchify import patchify
 from skimage.util import view_as_windows
 from sklearn.feature_extraction import image
+from sklearn.utils import class_weight
 import cv2
 import os
 
 
-def patch_extraction(imgs, masks, size, step):
+def compute_class_weights(train_masks):
+    masks_resh = train_masks.reshape(-1,1)
+    masks_resh_list = masks_resh.flatten().tolist()
+    class_weights = class_weight.compute_class_weight(class_weight='balanced', classes=np.unique(masks_resh), y=masks_resh_list)
+    
+    return class_weights
+
+
+def patch_extraction(imgs, masks, size):
     """
     Extracts patches from an image and mask using a sliding window with specified step size.
     """
+    if size == 32:
+        step = 32
+    elif size == 64:
+        step = 68
+    elif size == 128:
+        step = 160
+    elif size == 256:
+        step == 224
+    elif size == 480:
+        return imgs, masks
+    else:
+        print("Unknown patch size. Please enter 32, 64, 128, 256, 480.")
 
     img_patches = []
     for img in imgs:     
@@ -50,11 +71,23 @@ def extract_patches(img, rnd_state, nr_patches, patch_size):
     return patches
 
 
-def patch_pipeline(imgs, masks, patch_size, nr_patches):
+def patch_pipeline(imgs, masks, size):
     """
     wrapper around random patch function to extract the same patches for image and mask
     """
-    
+    if size == 32:
+        nr_patches = 320
+    elif size == 64:
+        nr_patches = 80
+    elif size == 128:
+        nr_patches = 20
+    elif size == 256:
+        nr_patches == 5
+    elif size == 480:
+        return imgs, masks
+    else:
+        print("Unknown patch size. Please enter 32, 64, 128, 256, 480.")
+
     patch_size = (patch_size, patch_size)
     
     rnd = 0
