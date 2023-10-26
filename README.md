@@ -17,9 +17,9 @@ If you want to use the current optimized model for inference on an image, use th
 ### Content
 This repository covers annotation, preprocessing, training, hyperparameter optimization, and prediction procedures. More information in the respective notebook headers.
 
-```extract_and_annotate_sample.ipynb```: image extraction and preparation for annotation.
+```extract_and_annotate.ipynb```: image extraction and preparation for annotation.
 
-```preprocessing_sample.ipynb```: image and mask preprocessing.
+```preprocess_training.ipynb```: image and mask preprocessing.
 
 ```training_sample.ipynb```: model training and hyperparameter optimization.
 
