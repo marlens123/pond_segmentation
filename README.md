@@ -6,6 +6,9 @@ The model is a U-net with ResNet34 backbone, pretrained on ImageNet. Current wor
 
 The data used is not published yet.
 
+### Publications
+[Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to my Bachelor thesis.
+
 ![pred_smpl](https://github.com/marlens123/pond_segmentation/assets/80780236/e0298018-ea2d-44a4-9711-a00b69464980)
 
 ### Setup
