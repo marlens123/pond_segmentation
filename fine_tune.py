@@ -1,24 +1,12 @@
-import os
-import keras
-import tensorflow as tf
 import numpy as np
-import pickle
-from matplotlib import pyplot as plt
-from sklearn.model_selection import train_test_split
-from keras.preprocessing.image import ImageDataGenerator
-from sklearn.utils import class_weight
-from utils.augmentation import get_training_augmentation, get_preprocessing, offline_augmentation
+from utils.augmentation import get_training_augmentation, offline_augmentation
 from utils.train_helpers import compute_class_weights, patch_extraction
-from utils.data import Dataloder, Dataset
-from sklearn.model_selection import KFold
 import models.segmentation_models_qubvel as sm
-from models.segmentation_models_qubvel.segmentation_models.utils import set_trainable
 import argparse
 from utils.train import run_train
 
 import wandb
 wandb.login()
-from wandb.keras import WandbMetricsLogger
 
 
 parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperparameter values were optimized during previous experiments.")
