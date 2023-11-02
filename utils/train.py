@@ -1,24 +1,18 @@
 import sys
 import os
 
-# add parent directory to system path
+# add parent directory to system path to be able to assess functions from root
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
 
-import tensorflow as tf
 import numpy as np
 import pickle
-from matplotlib import pyplot as plt
-from sklearn.model_selection import train_test_split
-from keras.preprocessing.image import ImageDataGenerator
-from sklearn.utils import class_weight
 import keras
 from utils.augmentation import get_training_augmentation, get_preprocessing, offline_augmentation
 from utils.train_helpers import patch_pipeline, patch_extraction, compute_class_weights
 from utils.data import Dataloder, Dataset
 from sklearn.model_selection import KFold
 import models.segmentation_models_qubvel as sm
-from models.segmentation_models_qubvel.segmentation_models.utils import set_trainable
 
 import wandb
 wandb.login()
@@ -32,6 +26,8 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
 
     Parameters:
     -----------
+        pref : str
+            identifier for training run
         X_train : numpy.ndarray
             train images
         y_train : numpy.ndarray
@@ -40,44 +36,33 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
             test images
         y_test : numpy.ndarray
             test labels
-        model : 
-        pref : str
-            identifier for training run
-        backbone : str
+        num_epochs : int
+            number of epochs
         loss : str
-        freeze_tune : Bool
-            (doesn't work yet) if True, freezes encoder for half of epochs and sets to trainable for second half
+        backbone : str
         optimizer : str
-        train_transfer : str or None
-            'imagenet' or None (from scratch)
-        encoder_freeze : Bool
-            if True, uses fixed feature extractor when pre-training
-        input_normalize : Bool
-            (not used) whether to normalize input
+        batch_size : int
+        model : keras.engine.functional.Functional
+            model defined before call
+        augmentation : albumentations.core.composition.Compose
+            specifies on-fly augmentation methods (if to be appplied; else None)
+        class_weights : list
+            the class weights to use (None when no weights should be used)
         fold_no : int
-            number of the crossfold run
+            if in hyperparameter optimization, number of the crossfold run
         final_run : Bool
             whether this is the final run (without crossfold validation)
-        batch_size : int
-        augmentation : 
-            on-fly augmentation methods (if to be appplied; else None)
-        final_run : Bool
-            (not used) whether this is the final run
-        epochs : int
-        weight_classes : Bool
-            whether to weight classes in loss function
-        class_weights :
-            the class weights to use
-    
+
     Return:
     ------
-        model, scores, hist_val_iou, time   
+        scores, hist_val_iou   
+            generalization metrics and history of generalization metrics
     """
     
     CLASSES=['melt_pond', 'sea_ice']
     weights = class_weights
     
-    # Dataset for train images
+    # training dataset
     train_dataset = Dataset(
         X_train, 
         y_train, 
@@ -86,7 +71,7 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
         preprocessing=get_preprocessing(sm.get_preprocessing(backbone)),
     )
 
-    # Dataset for validation images
+    # validation dataset
     valid_dataset = Dataset(
         X_test, 
         y_test, 
@@ -97,6 +82,7 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     train_dataloader = Dataloder(train_dataset, batch_size=batch_size, shuffle=True)
     valid_dataloader = Dataloder(valid_dataset, batch_size=1, shuffle=False)
 
+    # define loss
     if loss == 'jaccard':
         LOSS = sm.losses.JaccardLoss(class_weights=weights)
     elif loss == 'focal_dice':
@@ -110,6 +96,7 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     else:
         print('No loss function specified')
 
+    # define optimizer
     if optimizer == 'Adam':
         OPTIMIZER = keras.optimizers.Adam()
     elif optimizer == 'SGD':
@@ -119,6 +106,7 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     else:
         print('No optimizer specified')
 
+    # define evaluation metrics
     mean_iou = sm.metrics.IOUScore(name='mean_iou')
     weighted_iou = sm.metrics.IOUScore(class_weights=class_weights, name='weighted_iou')
     f1 = sm.metrics.FScore(beta=1, name='f1')
@@ -129,11 +117,9 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     ocean_iou = sm.metrics.IOUScore(class_indexes=2, name='ocean_iou')
     rounded_iou = sm.metrics.IOUScore(threshold=0.5, name='mean_iou_rounded')
 
-
-    # threshold value in iou metric will round predictions
+    # compile model
     model.compile(optimizer=OPTIMIZER, loss=LOSS, metrics=[mean_iou, weighted_iou, f1, precision, recall, melt_pond_iou,
                                                            sea_ice_iou, ocean_iou, rounded_iou])
-
 
     # save weights of best performing model in terms of minimal val_loss
     callbacks = [
@@ -153,8 +139,6 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     # save model scores
     with open('./scores/{}_trainHistoryDict'.format(pref), 'wb') as file_pi:
         pickle.dump(history.history, file_pi)
-
-    time = callbacks[1].logs
 
     # generalization metrics of trained model
     scores = model.evaluate(valid_dataloader, verbose=0)
