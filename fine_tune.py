@@ -12,7 +12,7 @@ wandb.login()
 parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperparameter values were optimized during previous experiments.")
 
 # prefix
-parser.add_argument("--pref", default="001", type=str, help="Identifier for the run. Model scores will be stored with this prefix.")
+parser.add_argument("--pref", default="ft_001", type=str, help="Identifier for the run. Model scores will be stored with this prefix.")
 
 # data
 parser.add_argument("--X_train", default="data/train_images.npy", type=str, help="Path to training images in .npy file format.")
