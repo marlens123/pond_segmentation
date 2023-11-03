@@ -8,8 +8,9 @@ sys.path.insert(0, parent_dir)
 import numpy as np
 import pickle
 import keras
-from utils.augmentation import get_training_augmentation, get_preprocessing, offline_augmentation
-from utils.train_helpers import patch_pipeline, patch_extraction, compute_class_weights
+import tensorflow as tf
+import pandas as pd
+from utils.augmentation import get_preprocessing
 from utils.data import Dataloder, Dataset
 
 import models.segmentation_models_qubvel as sm
@@ -124,7 +125,8 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     # save weights of best performing model in terms of minimal val_loss
     callbacks = [
         keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
-        WandbMetricsLogger()
+        WandbMetricsLogger(),
+        tf.keras.callbacks.CSVLogger('./metrics/{}.csv'.format(pref))
     ]
 
     history = model.fit(train_dataloader,
@@ -135,15 +137,3 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
                         validation_data=valid_dataloader, 
                         validation_steps=len(valid_dataloader),
                         shuffle=False)
-
-    # save model scores
-    with open('./scores/{}_trainHistoryDict'.format(pref), 'wb') as file_pi:
-        pickle.dump(history.history, file_pi)
-
-    # generalization metrics of trained model
-    scores = model.evaluate(valid_dataloader, verbose=0)
-
-    # history generalization metric
-    hist_val_iou = history.history['val_mean_iou']
-        
-    return scores, hist_val_iou

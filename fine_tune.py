@@ -88,9 +88,9 @@ def main():
     config = wandb.config
 
     # run training
-    _, _ = run_train(pref=params['pref'], X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, num_epochs=params['num_epochs'],
-                  loss=params['loss'], backbone=params['backbone'], optimizer=params['optimizer'], batch_size=params['batch_size'], 
-                  model=model, augmentation=on_fly, class_weights=class_weights)
+    run_train(pref=params['pref'], X_train=X_train, y_train=y_train, X_test=X_test, y_test=y_test, num_epochs=params['num_epochs'],
+            loss=params['loss'], backbone=params['backbone'], optimizer=params['optimizer'], batch_size=params['batch_size'], 
+            model=model, augmentation=on_fly, class_weights=class_weights)
 
     wandb.join()
 
