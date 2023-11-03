@@ -65,7 +65,6 @@ def preprocess_prediction(image, model_preprocessing, smooth=False):
     """
     Preprocesses image to be suitable as input for model prediction.
     """
-
     image = expand_greyscale_channels(image)
 
     # create mask of zeros such that preprocessing function works
@@ -166,3 +165,21 @@ def predict_image(img, im_size, weights, backbone='resnet34', train_transfer='im
 
     visualize_ir(segmented_image)
     cv2.imwrite(save_path, segmented_image)
+
+
+def calculate_mpf(dir):
+
+    num_imgs = 0
+    mpf_coll = 0
+
+    for f in os.listdir(dir):
+        num_imgs += 1
+        im = cv2.imread(os.path.join(dir, f),0)
+        pond = np.sum(im==0)
+        sea_ice = np.sum(im==1)
+        mpf = pond / ( sea_ice + pond )
+        mpf_coll += mpf
+
+    mpf = mpf_coll / num_imgs
+
+    return mpf
