@@ -137,3 +137,9 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
                         validation_data=valid_dataloader, 
                         validation_steps=len(valid_dataloader),
                         shuffle=False)
+
+    # generalization metrics of trained model
+    scores = model.evaluate(valid_dataloader, verbose=0)
+    hist_val_iou = history.history['val_mean_iou']
+        
+    return scores, hist_val_iou
