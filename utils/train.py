@@ -5,18 +5,13 @@ import os
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
 
-import numpy as np
-import pickle
 import keras
 import tensorflow as tf
-import pandas as pd
 from utils.augmentation import get_preprocessing
 from utils.data import Dataloder, Dataset
 
 import models.segmentation_models_qubvel as sm
 
-import wandb
-wandb.login()
 from wandb.keras import WandbMetricsLogger
 
 
@@ -51,8 +46,6 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
             the class weights to use (None when no weights should be used)
         fold_no : int
             if in hyperparameter optimization, number of the crossfold run
-        final_run : Bool
-            whether this is the final run (without crossfold validation)
 
     Return:
     ------
@@ -125,8 +118,8 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     # save weights of best performing model in terms of minimal val_loss
     callbacks = [
         keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
-        WandbMetricsLogger(),
-        tf.keras.callbacks.CSVLogger('./metrics/{}.csv'.format(pref))
+        tf.keras.callbacks.CSVLogger('./metrics/{}.csv'.format(pref)),
+        #WandbMetricsLogger()
     ]
 
     history = model.fit(train_dataloader,
