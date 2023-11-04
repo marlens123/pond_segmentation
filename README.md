@@ -48,7 +48,7 @@ This repository covers annotation, preprocessing, training, hyperparameter optim
 
 ```models/```: pre-trained [segmentation models](https://github.com/qubvel/segmentation_models).
 
-```metrics/```: model scores stored after training.
+```metrics/```: stores model scores and melt pond fraction results.
 
 ```utils/```: functions needed for preprocessing, training, prediction.
 

@@ -118,7 +118,7 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     # save weights of best performing model in terms of minimal val_loss
     callbacks = [
         keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
-        tf.keras.callbacks.CSVLogger('./metrics/{}.csv'.format(pref)),
+        tf.keras.callbacks.CSVLogger('./metrics/scores/{}.csv'.format(pref)),
         #WandbMetricsLogger()
     ]
 
