@@ -5,7 +5,6 @@ import argparse
 import matplotlib.pyplot as plt
 from utils.predict_helpers import calculate_mpf, predict_image, crop_center_square
 
-
 ### To-Do: Store the resulting MPFs in a CSV file
 ### retrieve the index / identifier of the flight
 ### include disclaimer that much storage is needed
@@ -34,10 +33,12 @@ def main():
 
     imgs = tmp
 
+    # extract only every 4th image to avoid overlap
     for idx, img in enumerate(imgs):
-        plt.imsave(os.path.join(params['preprocessed_path'], '{}.png'.format(idx)), img, cmap='gray')
+        if( idx % 4 == 0):
+            plt.imsave(os.path.join(params['preprocessed_path'], '{}.png'.format(idx)), img, cmap='gray')
 
-    # process surface masks from images
+    # extract surface masks from images
     for idx, file in enumerate(os.listdir(params['preprocessed_path'])):
         img = cv2.imread(os.path.join(params['preprocessed_path'], file), 0)
         predict_image(img, 480, params['weights'], backbone='resnet34', train_transfer='imagenet', save_path=os.path.join(params['predicted_path'],'{}.png'.format(idx)), visualize=False)
