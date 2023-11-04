@@ -12,10 +12,10 @@ from utils.predict_helpers import calculate_mpf, predict_image, crop_center_squa
 
 parser = argparse.ArgumentParser(description="Uses trained model to predict and store surface masks from netCDF file containing TIR images from a single helicopter flight. Optional calculation of melt pond fraction (MPF).")
 
-parser.add_argument("--data", type=str, help="Path to netCDF data file.")
+parser.add_argument("--data", type=str, help="Path to netCDF data file. Ideally store in 'data/prediction/raw'.")
 parser.add_argument("--weights", default="weights/flight9_flight16.h5", type=str, help="Path to model weights that should be used.")
-parser.add_argument("--preprocessed_path", type=str, help="Path to folder that should store the preprocessed images.")
-parser.add_argument("--predicted_path", type=str, help="Path to folder that should store the predicted image masks.")
+parser.add_argument("--preprocessed_path", default="data/prediction/preprocessed", type=str, help="Path to folder that should store the preprocessed images.")
+parser.add_argument("--predicted_path", default="data/prediction/predicted", type=str, help="Path to folder that should store the predicted image masks.")
 parser.add_argument("--mpf", action='store_false', help="Whether to return the melt pond fraction for the predicted flight.")
 
 def main():

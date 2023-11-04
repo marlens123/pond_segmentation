@@ -15,10 +15,10 @@ parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperpa
 parser.add_argument("--pref", default="ft_001", type=str, help="Identifier for the run. Model scores will be stored with this prefix.")
 
 # data
-parser.add_argument("--X_train", default="data/train_images.npy", type=str, help="Path to training images in .npy file format.")
-parser.add_argument("--y_train", default="data/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
-parser.add_argument("--X_test", default="data/test_images.npy", type=str, help="Path to testing images in .npy file format.")
-parser.add_argument("--y_test", default="data/test_masks.npy", type=str, help="Path to testing masks in .npy file format.")
+parser.add_argument("--X_train", default="data/training/train_images.npy", type=str, help="Path to training images in .npy file format.")
+parser.add_argument("--y_train", default="data/training/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
+parser.add_argument("--X_test", default="data/training/test_images.npy", type=str, help="Path to testing images in .npy file format.")
+parser.add_argument("--y_test", default="data/training/test_masks.npy", type=str, help="Path to testing masks in .npy file format.")
 
 # hyperparameters
 parser.add_argument("--im_size", default=480, type=int, choices=[32, 64, 128, 256, 480], help="Patch size to train on. Choices are constrained because of patch extraction setup.")
