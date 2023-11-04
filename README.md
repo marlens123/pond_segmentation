@@ -7,7 +7,9 @@ The model is a U-net with ResNet34 backbone, pretrained on ImageNet. Current wor
 The data used is not published yet.
 
 ### Publications
-[Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to my Bachelor thesis.
+[Link to Bachelor thesis](https://seaice.uni-bremen.de/proceedings-theses-reports/).
+
+[Link to related essay](https://te.ma/art/ut5cb0/reil-melting-ponds-arctic-sea/).
 
 ![pred_smpl](https://github.com/marlens123/pond_segmentation/assets/80780236/e0298018-ea2d-44a4-9711-a00b69464980)
 
@@ -15,13 +17,21 @@ The data used is not published yet.
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
 
 ### Quickstart
-If you want to use the current optimized model for inference on an image, use the following:
+If you want to use the current optimized model to extract surface masks for a flight:
 
-(in progress...)```python -m utils.predict image```.
+- Insert the respective ```netCDF``` file into ```data/prediction/raw/```.
+- Run ```python predict.py --data [path_to_netCDF_file]```.
+- The resulting melt pond fraction will be stored in (in progress...)
 
-To fine-tune the model using different hyperparameters or training data:
+To fine-tune the model:
 
-```python fine_tune.py --pref [pref_name]```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/``` will be used.
+- Run ```python fine_tune.py --pref [pref_name]```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/training/``` will be used.
+
+To run hyperparameter optimization (hyperparameters need to be adjusted manually):
+
+(in progress...)
+
+... reproduces the model selection process.
 
 ### Additional Files
 This repository covers annotation, preprocessing, training, hyperparameter optimization, and prediction procedures. More information in the respective notebook headers.
