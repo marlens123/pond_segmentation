@@ -1,5 +1,5 @@
 import pandas as pd
-from .image_transform import crop_center_square
+from preprocess_helpers import crop_center_square
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -44,7 +44,7 @@ def extract_single(dataset, idx, time, flight_nr, save_path):
     plt.imsave(os.path.join(save_path, '{}_{}.png'.format(timestamp,idx)), img, cmap='cividis')
 
 
-def extract_part(dataset, dataset_size, time, flight_nr, save_path):
+def extract_without_overlap(dataset, dataset_size, time, flight_nr, save_path, clip=False):
     """
     Extracts only every fourth image - extracted images will be non-overlapping, saves memory.
 
@@ -61,8 +61,9 @@ def extract_part(dataset, dataset_size, time, flight_nr, save_path):
             timestamp = extract_time(i, time, flight_nr).replace(' ','_').replace(':','').replace('-','')
             img = dataset[i]
 
-            # clip for better visibility
-            img = np.clip(img, 273, 276)
+            # optionally clip for better visibility
+            if clip:
+                img = np.clip(img, 273, 276)
 
             plt.imsave(os.path.join(save_path, '{}_{}.png'.format(timestamp,idx)), img, cmap='cividis')
 

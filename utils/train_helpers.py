@@ -3,9 +3,6 @@ from patchify import patchify
 from skimage.util import view_as_windows
 from sklearn.feature_extraction import image
 from sklearn.utils import class_weight
-import cv2
-import os
-
 
 def compute_class_weights(train_masks):
     masks_resh = train_masks.reshape(-1,1)
