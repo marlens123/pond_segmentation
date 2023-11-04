@@ -1,15 +1,15 @@
 # Detection of Melt Ponds on Arctic Sea Ice from Infrared Images
 
 This repository develops a segmentation tool that partitions helicopter-borne thermal infrared (TIR) images into sea ice, melt pond, and ocean classes. 
-The data used were aquired during the PSP131 ATWAICE campaign [1]. All training images and masks can be investigated in ```preprocessing_sample.ipynb```.
+The data used were aquired during the PSP131 ATWAICE campaign [1]. All training images and masks can be investigated in ```preprocess_training.ipynb```.
 The model is a U-net with ResNet34 backbone, pretrained on ImageNet. Current work focusses on the integration of visual imagery into the training.
 
 The data used is not published yet.
 
 ### Publications
-[Link to Bachelor thesis](https://seaice.uni-bremen.de/proceedings-theses-reports/).
+[Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to Bachelor thesis.
 
-[Link to related essay](https://te.ma/art/ut5cb0/reil-melting-ponds-arctic-sea/).
+[Link](https://te.ma/art/ut5cb0/reil-melting-ponds-arctic-sea/) to related essay.
 
 ![pred_smpl](https://github.com/marlens123/pond_segmentation/assets/80780236/e0298018-ea2d-44a4-9711-a00b69464980)
 
@@ -40,21 +40,19 @@ This repository covers annotation, preprocessing, training, hyperparameter optim
 
 ```preprocess_training.ipynb```: image and mask preprocessing.
 
-```training_sample.ipynb```: model training and hyperparameter optimization.
+```prediction_sample.ipynb```: inference for different patch size scenarios.
 
-```prediction_sample.ipynb```: inference for different scenarios.
-
-```data/```: preprocessed train and test data.
+```data/```: data container.
 
 ```docs/```: annotation documentation.
 
 ```models/```: pre-trained [segmentation models](https://github.com/qubvel/segmentation_models).
 
-```scores/```: model scores stored after training.
+```metrics/```: model scores stored after training.
 
 ```utils/```: functions needed for preprocessing, training, prediction.
 
-```weights/```: sample weights of fine-tuned models.
+```weights/```: weights of fine-tuned models.
 
 ### Background
 Melt ponds are pools of water on Arctic sea ice that have a strong influence on the Arctic energy budget by increasing the amount of sunlight that is absorbed. 
@@ -67,7 +65,7 @@ Infrared imagery can be used to derive melt pond parameters and thermal properti
 ![model_architecture|50%](https://github.com/marlens123/ponds_extended/assets/80780236/84dde17c-6ecd-4608-af7f-7be75de84729)
 
 ### Disclaimer
-The project is the extended version of my Bachelor thesis under the supervision of Dr. Gunnar Spreen ([Polar Remote Sensing Group](https://seaice.uni-bremen.de/research-group/), University of Bremen)
+The project is the extended version of my Bachelor thesis under the supervision of Dr. Gunnar Spreen ([Remote Sensing Group of Polar Regions](https://seaice.uni-bremen.de/research-group/), University of Bremen)
 and Dr. Ulf Krumnack ([Computer Vision Group](https://www.ikw.uni-osnabrueck.de/en/research_groups/computer_vision.html), University of Osnabrück).
 
 ### References
