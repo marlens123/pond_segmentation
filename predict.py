@@ -16,7 +16,7 @@ parser.add_argument("--data", type=str, help="Path to netCDF data file.")
 parser.add_argument("--weights", default="weights/flight9_flight16.h5", type=str, help="Path to model weights that should be used.")
 parser.add_argument("--preprocessed_path", type=str, help="Path to folder that should store the preprocessed images.")
 parser.add_argument("--predicted_path", type=str, help="Path to folder that should store the predicted image masks.")
-parser.add_argument("--mpf", default=True, type=bool, help="Whether to return the melt pond fraction for the predicted flight.")
+parser.add_argument("--mpf", action='store_false', help="Whether to return the melt pond fraction for the predicted flight.")
 
 def main():
     args = parser.parse_args()

@@ -30,10 +30,10 @@ parser.add_argument("--batch_size", default=4, type=int, help="Batch size. Adjus
 parser.add_argument("--augmentation_design", default="on_fly", type=str, choices=[None, "offline", "on_fly"], help="Either None, 'offline' (fixed augmentation before training), or 'on_fly' (while feeding data into the model).")
 parser.add_argument("--augmentation_technique", default=4, type=int, choices=[0, 1, 2, 3, 4, 5], help="0 : flip, 1 : rotate, 2 : crop, 3 : brightness contrast, 4 : sharpen blur, 5 : Gaussian noise.")
 parser.add_argument("--augmentation_factor", default=2, type=int, help="Magnitude by which the dataset will be increased through augmentation. Only takes effect when augmentation_design is set 'offline'.")
-parser.add_argument("--weight_classes", default=True, type=bool, help="If the loss function should account for class imbalance.")
-parser.add_argument("--use_dropout", default=True, type=bool, help="If to use dropout layers after upsampling operations in the decoder.")
+parser.add_argument("--weight_classes", action='store_false', help="If the loss function should account for class imbalance.")
+parser.add_argument("--use_dropout", action='store_false', help="If to use dropout layers after upsampling operations in the decoder.")
 parser.add_argument("--pretrain", default="imagenet", type=str, choices=["imagenet", None], help="Either 'imagenet' to use encoder weights pretrained on ImageNet or None to train from scratch.")
-parser.add_argument("--freeze", default=True, type=bool, help="Only takes effect when pretrain is set to True. Whether to freeze encoder during training or allow fine-tuning of encoder weights.")
+parser.add_argument("--freeze", action='store_false', help="Only takes effect when pretrain is set to True. Whether to freeze encoder during training or allow fine-tuning of encoder weights.")
 
 
 def main():
