@@ -66,8 +66,15 @@ def main():
     if params['mpf']:
         mpf = calculate_mpf(params['predicted_path'])
 
+        headers = ['flight_date', 'melt_pond_fraction']
+
         with open('metrics/mpf/mpf.csv', 'a', newline='') as f:
             writer = csv.writer(f)
+
+            # headers in the first row
+            if f.tell() == 0:
+                writer.writerow(headers)
+
             writer.writerow([formatted_date, mpf])
 
     print("Process ended.")
