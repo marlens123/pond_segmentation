@@ -173,12 +173,13 @@ def calculate_mpf(dir):
     mpf_coll = 0
 
     for f in os.listdir(dir):
-        num_imgs += 1
-        im = cv2.imread(os.path.join(dir, f),0)
-        pond = np.sum(im==0)
-        sea_ice = np.sum(im==1)
-        mpf = pond / ( sea_ice + pond )
-        mpf_coll += mpf
+        if f.endswith('.png'):
+            num_imgs += 1
+            im = cv2.imread(os.path.join(dir, f),0)
+            pond = np.sum(im==0)
+            sea_ice = np.sum(im==1)
+            mpf = pond / ( sea_ice + pond )
+            mpf_coll += mpf
 
     mpf = mpf_coll / num_imgs
 
