@@ -17,11 +17,11 @@ The data used is not published yet.
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
 
 ### Quickstart
-If you want to use the current optimized model to extract surface masks for a flight:
+If you want to use the current optimized model to segment images and extract melt pond fraction for a specific flight:
 
 - Insert the respective ```netCDF``` file into ```data/prediction/raw/```.
 - Run ```python predict.py --data [path_to_netCDF_file]```.
-- The resulting melt pond fraction will be stored in (in progress...)
+- Predicted images can be found in ```data/prediction/predicted/```. The resulting melt pond fraction can be found in ```metrics/mpf/mpf.csv```.
 
 To fine-tune the model:
 
