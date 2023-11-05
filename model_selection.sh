@@ -10,25 +10,25 @@
 
 echo "Investigating patch size..."
 
-python utils/evaluate_hyperparams.py --pref patch_size_32 --im_size 32 --loss categoricalCE --augmentation_design None --batch_size 32
-python utils/evaluate_hyperparams.py --pref patch_size_64 --im_size 64 --loss categoricalCE --augmentation_design None --batch_size 16
-python utils/evaluate_hyperparams.py --pref patch_size_128 --im_size 128 --loss categoricalCE --augmentation_design None --batch_size 8
-python utils/evaluate_hyperparams.py --pref patch_size_256 --im_size 256 --loss categoricalCE --augmentation_design None --batch_size 4
-python utils/evaluate_hyperparams.py --pref patch_size_480 --im_size 480 --loss categoricalCE --augmentation_design None --batch_size 2
+python utils/evaluate_hyperparams.py --pref patch_size_32 --im_size 32 --loss categoricalCE --augmentation_design none --batch_size 32
+python utils/evaluate_hyperparams.py --pref patch_size_64 --im_size 64 --loss categoricalCE --augmentation_design none --batch_size 16
+python utils/evaluate_hyperparams.py --pref patch_size_128 --im_size 128 --loss categoricalCE --augmentation_design none --batch_size 8
+python utils/evaluate_hyperparams.py --pref patch_size_256 --im_size 256 --loss categoricalCE --augmentation_design none --batch_size 4
+python utils/evaluate_hyperparams.py --pref patch_size_480 --im_size 480 --loss categoricalCE --augmentation_design none --batch_size 2
 
 echo "Investigating loss function..."
 
-python utils/evaluate_hyperparams.py --pref loss_focal --im_size 480 --loss focal --use_class_weights --augmentation_design None --batch_size 2
-python utils/evaluate_hyperparams.py --pref loss_focal_dice --im_size 480 --loss focal_dice --use_class_weights --augmentation_design None --batch_size 2
+python utils/evaluate_hyperparams.py --pref loss_focal --im_size 480 --loss focal --use_class_weights --augmentation_design none --batch_size 2
+python utils/evaluate_hyperparams.py --pref loss_focal_dice --im_size 480 --loss focal_dice --use_class_weights --augmentation_design none --batch_size 2
 
 echo "Investigating dropout..."
 
-python utils/evaluate_hyperparams.py --pref use_dropout --im_size 480 --loss focal_dice --use_class_weights --use_dropout --augmentation_design None --batch_size 2
+python utils/evaluate_hyperparams.py --pref use_dropout --im_size 480 --loss focal_dice --use_class_weights --use_dropout --augmentation_design none --batch_size 2
 
 echo "Investigating pretraining strategy..."
 
-python utils/evaluate_hyperparams.py --pref freeze_encoder --im_size 480 --loss focal_dice --use_class_weights --use_droppout --augmentation_design None --batch_size 2
-python utils/evaluate_hyperparams.py --pref train_from_scratch --im_size 480 --loss focal_dice --use_class_weights --use_dropout --augmentation_design None --batch_size 2
+python utils/evaluate_hyperparams.py --pref freeze_encoder --im_size 480 --loss focal_dice --use_class_weights --use_droppout --augmentation_design none --batch_size 2
+python utils/evaluate_hyperparams.py --pref train_from_scratch --im_size 480 --loss focal_dice --use_class_weights --use_dropout --augmentation_design none --batch_size 2
 
 echo "Investigating augmentation technique..."
 
