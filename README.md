@@ -23,6 +23,8 @@ If you want to use the current optimized model to segment images and extract mel
 - Run ```python predict.py --data [path_to_netCDF_file]```.
 - Predicted images can be found in ```data/prediction/predicted/```. The resulting melt pond fraction can be found in ```metrics/melt_pond_fraction/mpf.csv```.
 
+So far, melt pond fraction results are only exemplary because of insufficient model performance.
+
 To fine-tune the model:
 
 - Run ```python fine_tune.py --pref [pref_name] --use_dropout --use_class_weights```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/training/``` will be used.
@@ -31,10 +33,10 @@ To fine-tune the model:
 In this work, hyperparameters have been investigated sequentially. To reproduce hyperparameter optimization using k-crossfold validation:
 
 - Run ```sh model_selection.sh```. Model weights will not be stored during hyperparameter tuning.
-- This work selected hyperparameter values according to the best iou score averaged accross all folds. For implementation see ```utils/evaluate_hyperparams.py```. Results can be found in ```metrics/hyperparameter_tune_results/[pref_name].csv```.
+- This work selected hyperparameter values according to the best validation iou score averaged over all folds. For implementation see ```utils/evaluate_hyperparams.py```. Results can be found in ```metrics/hyperparameter_tune_results/[pref_name].csv```.
 
 ### Additional Files
-This repository covers annotation, preprocessing, training, hyperparameter optimization, and prediction procedures. More information in the respective notebook headers.
+This repository covers annotation, preprocessing, training, hyperparameter optimization, and prediction procedures.
 
 ```extract_and_annotate.ipynb```: image extraction and preparation for annotation.
 
@@ -54,7 +56,7 @@ This repository covers annotation, preprocessing, training, hyperparameter optim
 
 ```weights/```: weights of fine-tuned models.
 
-### Disclaimer
+### Interpretation of Results
 The test data set currently contains only two images and is unlikely to represent the training data distribution, not to mention the distribution of the real data. Therefore, numerical performance estimates should be considered with caution, and should be regarded in combination with qualitative results (```prediction_sample.ipynb```). Hyperparameter optimization was performed using k-crossfold validation to give a better decision base.
 
 ### Background

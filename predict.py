@@ -68,7 +68,7 @@ def main():
 
         headers = ['flight_date', 'melt_pond_fraction']
 
-        with open('metrics/mpf/mpf.csv', 'a', newline='') as f:
+        with open('metrics/melt_pond_fraction/mpf.csv', 'a', newline='') as f:
             writer = csv.writer(f)
 
             # headers in the first row

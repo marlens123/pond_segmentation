@@ -23,7 +23,7 @@ class Dataset:
         augmentation (albumentations.Compose): data transfromation pipeline 
             (e.g. flip, scale, etc.)
         preprocessing (albumentations.Compose): data preprocessing 
-            (e.g. noralization, shape manipulation, etc.)
+            (e.g. normalization, shape manipulation, etc.)
     
     """
     
@@ -36,15 +36,12 @@ class Dataset:
             classes=None,
             augmentation=None, 
             preprocessing=None,
-            normalize=False,
     ):
         self.images_fps = images.tolist()
         self.masks_fps = masks.tolist()
         
         # convert str names to class values on masks
         self.class_values = [self.CLASSES.index(cls.lower()) for cls in classes]
-        
-        self.normalize = normalize
 
         self.augmentation = augmentation
         self.preprocessing = preprocessing
@@ -69,17 +66,10 @@ class Dataset:
 
         print(mask.shape)
         print(np.unique(mask))
-
         print(image.dtype)
 
         image = image.astype(np.float32)
         mask = mask.astype(np.float32)
-
-        # optional normalization (not used in thesis)
-        print("Image shape before normalization...", image.shape)
-        if self.normalize:
-            image = image / 255
-        print("Image shape after normalization...", image.shape)
 
         # apply augmentations
         if self.augmentation:

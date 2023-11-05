@@ -16,7 +16,7 @@ from wandb.keras import WandbMetricsLogger
 
 
 def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone, optimizer, batch_size,
-                model, augmentation=None, class_weights=None, fold_no=None):
+                model, augmentation=None, class_weights=None, fold_no=None, training_mode='fine_tune'):
     """
     Training function.
 
@@ -46,6 +46,8 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
             the class weights to use (None when no weights should be used)
         fold_no : int
             if in hyperparameter optimization, number of the crossfold run
+        training_mode : str
+            either 'fine_tune' or 'hyperparameter_tune'
 
     Return:
     ------
@@ -54,7 +56,7 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     """
     
     CLASSES=['melt_pond', 'sea_ice']
-    weights = class_weights
+    WEIGHTS = class_weights
     
     # training dataset
     train_dataset = Dataset(
@@ -78,13 +80,13 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
 
     # define loss
     if loss == 'jaccard':
-        LOSS = sm.losses.JaccardLoss(class_weights=weights)
+        LOSS = sm.losses.JaccardLoss(class_weights=class_weights)
     elif loss == 'focal_dice':
-        dice_loss = sm.losses.DiceLoss(class_weights=weights) 
+        dice_loss = sm.losses.DiceLoss(class_weights=class_weights) 
         focal_loss = sm.losses.CategoricalFocalLoss()
         LOSS = dice_loss + (1 * focal_loss)
     elif loss == 'categoricalCE':
-        LOSS = sm.losses.CategoricalCELoss(class_weights=weights)
+        LOSS = sm.losses.CategoricalCELoss(class_weights=class_weights)
     elif loss== 'focal':
         LOSS = sm.losses.CategoricalFocalLoss()
     else:
@@ -115,12 +117,22 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     model.compile(optimizer=OPTIMIZER, loss=LOSS, metrics=[mean_iou, weighted_iou, f1, precision, recall, melt_pond_iou,
                                                            sea_ice_iou, ocean_iou, rounded_iou])
 
-    # save weights of best performing model in terms of minimal val_loss
-    callbacks = [
-        keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
-        tf.keras.callbacks.CSVLogger('./metrics/scores/{}.csv'.format(pref)),
-        #WandbMetricsLogger()
-    ]
+
+    # define callbacks
+    if training_mode == 'hyperparameter_tune':
+        callbacks = [
+            tf.keras.callbacks.CSVLogger('./metrics/scores/{0}/{1}.csv'.format(training_mode, pref)),
+            #WandbMetricsLogger()
+        ]
+
+    # when in fine-tuning, save weights of best performing model in terms of minimal val_loss
+    else:
+        callbacks = [
+            keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
+            tf.keras.callbacks.CSVLogger('./metrics/scores/{0}/{1}.csv'.format(training_mode, pref)),
+            #WandbMetricsLogger()
+        ]
+
 
     history = model.fit(train_dataloader,
                         verbose=1,
