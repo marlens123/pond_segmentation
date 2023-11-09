@@ -39,6 +39,7 @@ def main():
         # use whole path when abs path is given, else use data from 'data/prediction/raw'
         if '/' in params['data']:
             ds = netCDF4.Dataset(params['data'])
+            print("Abs path is used.")
         else:
             ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
         imgs = ds.variables['Ts'][:]
