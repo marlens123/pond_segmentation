@@ -42,6 +42,7 @@ def main():
             print("Abs path is used.")
         else:
             ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
+            print("Rel path is used.")
         imgs = ds.variables['Ts'][:]
 
         tmp = []
