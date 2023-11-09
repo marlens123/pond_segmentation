@@ -71,7 +71,7 @@ def main():
         for idx, file in enumerate(os.listdir(params['preprocessed_path'])):
             if file.endswith('.png'):
                 img = cv2.imread(os.path.join(params['preprocessed_path'], file), 0)
-                predict_image(img, 480, params['weights'], backbone='resnet34', train_transfer='imagenet', save_path=os.path.join(params['predicted_path'],'{}.png'.format(idx)), visualize=False)
+                predict_image(img, 480, params['weights_path'], backbone='resnet34', train_transfer='imagenet', save_path=os.path.join(params['predicted_path'],'{}.png'.format(idx)), visualize=False)
 
     # optionally calculate melt pond fraction and store in csv file
     if params['mpf']:
