@@ -10,9 +10,10 @@ from utils.predict_helpers import calculate_mpf, predict_image, crop_center_squa
 parser = argparse.ArgumentParser(description="Uses trained model to predict and store surface masks from netCDF file containing TIR images from a single helicopter flight. Optional calculation of melt pond fraction (MPF).")
 
 parser.add_argument("--data", type=str, help="Either: 1) Filename of netCDF data file. For this, data must be stored in 'data/prediction/raw'. Or: 2) Absolute path to netCDF data file. Then data must not be copied in advance.")
-parser.add_argument("--weights", default="weights/flight9_flight16.h5", type=str, help="Path to model weights that should be used.")
+parser.add_argument("--weights_path", default="weights/flight9_flight16.h5", type=str, help="Path to model weights that should be used.")
 parser.add_argument("--preprocessed_path", default="data/prediction/preprocessed", type=str, help="Path to folder that should store the preprocessed images.")
 parser.add_argument("--predicted_path", default="data/prediction/predicted", type=str, help="Path to folder that should store the predicted image masks.")
+parser.add_argument("--metrics_path", default="metrics/melt_pond_fraction/mpf.csv", type=str, help="Path to .csv file that should store the resulting mpf (if calculation is desired).")
 parser.add_argument("--mpf", action="store_false", help="Whether to calculate the melt pond fraction for the predicted flight.")
 parser.add_argument("--skip_prediction", action="store_true", help="Skips prediction process. Can be used to directly perform mpf calculation. In that case, 'predicted_path' must contain predicted images.")
 
@@ -74,7 +75,7 @@ def main():
 
         headers = ['flight_date', 'melt_pond_fraction']
 
-        with open('metrics/melt_pond_fraction/mpf.csv', 'a', newline='') as f:
+        with open(params['metrics_path'], 'a', newline='') as f:
             writer = csv.writer(f)
 
             # headers in the first row
