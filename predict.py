@@ -9,7 +9,7 @@ from utils.predict_helpers import calculate_mpf, predict_image, crop_center_squa
 
 parser = argparse.ArgumentParser(description="Uses trained model to predict and store surface masks from netCDF file containing TIR images from a single helicopter flight. Optional calculation of melt pond fraction (MPF).")
 
-parser.add_argument("--data", type=str, help="Filename of netCDF data file. Must be stored in 'data/prediction/raw'.")
+parser.add_argument("--data", type=str, help="Either: 1) Filename of netCDF data file. For this, data must be stored in 'data/prediction/raw'. Or: 2) Absolute path to netCDF data file. Then data must not be copied in advance.")
 parser.add_argument("--weights", default="weights/flight9_flight16.h5", type=str, help="Path to model weights that should be used.")
 parser.add_argument("--preprocessed_path", default="data/prediction/preprocessed", type=str, help="Path to folder that should store the preprocessed images.")
 parser.add_argument("--predicted_path", default="data/prediction/predicted", type=str, help="Path to folder that should store the predicted image masks.")
@@ -36,7 +36,11 @@ def main():
     if not params['skip_prediction']:
 
         # load data and store as images
-        ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
+        # use whole path when abs path is given, else use data from 'data/prediction/raw'
+        if '/' in params['data']:
+            ds = netCDF4.Dataset(params['data'])
+        else:
+            ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
         imgs = ds.variables['Ts'][:]
 
         tmp = []
