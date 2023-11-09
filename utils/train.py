@@ -15,8 +15,8 @@ import models.segmentation_models_qubvel as sm
 from wandb.keras import WandbMetricsLogger
 
 
-def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone, optimizer, batch_size,
-                model, augmentation=None, class_weights=None, fold_no=None, training_mode='fine_tune'):
+def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, backbone, optimizer, batch_size,
+                model, X_train_vis=None, X_test_vis=None, augmentation=None, class_weights=None, fold_no=None, training_mode='fine_tune'):
     """
     Training function.
 
@@ -60,8 +60,9 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
     
     # training dataset
     train_dataset = Dataset(
-        X_train, 
-        y_train, 
+        images=X_train_ir, 
+        masks=y_train, 
+        images_vis=X_train_vis,
         classes=CLASSES, 
         augmentation=augmentation,
         preprocessing=get_preprocessing(sm.get_preprocessing(backbone)),
@@ -69,8 +70,9 @@ def run_train(pref, X_train, y_train, X_test, y_test, num_epochs, loss, backbone
 
     # validation dataset
     valid_dataset = Dataset(
-        X_test, 
-        y_test, 
+        images=X_test_ir,
+        masks=y_test, 
+        images_vis=X_test_vis,
         classes=CLASSES,
         preprocessing=get_preprocessing(sm.get_preprocessing(backbone)),
     )

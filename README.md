@@ -17,6 +17,8 @@ The data used is not published yet.
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
 
 ### Quickstart
+(Training data and model weights contained in this repository are tracked by LFS. To restore them, install git-lfs, run ```git lfs fetch``` and then ```git lfs checkout```).
+
 If you want to use the current optimized model to segment images and extract melt pond fraction for a specific flight:
 
 - Insert the respective ```netCDF``` file into ```data/prediction/raw/```.

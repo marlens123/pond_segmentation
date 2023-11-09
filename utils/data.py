@@ -31,13 +31,14 @@ class Dataset:
     
     def __init__(
             self, 
-            images, 
+            images_ir, 
             masks, 
+            images_vis=None,
             classes=None,
             augmentation=None, 
             preprocessing=None,
     ):
-        self.images_fps = images.tolist()
+        self.images_fps = images_ir.tolist()
         self.masks_fps = masks.tolist()
         
         # convert str names to class values on masks
