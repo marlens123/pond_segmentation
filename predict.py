@@ -36,9 +36,9 @@ def main():
     else:
         print("Date not found in the filename.")
 
-    if not params['start_predict']:
+    if not params['skip_prediction']:
 
-        if not params['skip_prediction']:
+        if not params['start_predict']:
 
             # load data and store as images
             # use whole path when abs path is given, else use data from 'data/prediction/raw'
