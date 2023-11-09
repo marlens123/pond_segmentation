@@ -17,6 +17,8 @@ parser.add_argument("--metrics_path", default="metrics/melt_pond_fraction/mpf.cs
 parser.add_argument("--mpf", action="store_false", help="Whether to calculate the melt pond fraction for the predicted flight.")
 parser.add_argument("--skip_prediction", action="store_true", help="Skips prediction process. Can be used to directly perform mpf calculation. In that case, 'predicted_path' must contain predicted images.")
 
+parser.add_argument("--start_predict", action="store_true", help="")
+
 def main():
     args = parser.parse_args()
     params = vars(args)
@@ -34,32 +36,34 @@ def main():
     else:
         print("Date not found in the filename.")
 
-    if not params['skip_prediction']:
+    if not params['start_prediction']:
 
-        # load data and store as images
-        # use whole path when abs path is given, else use data from 'data/prediction/raw'
-        if '/' in params['data']:
-            ds = netCDF4.Dataset(params['data'])
-            print("Abs path is used.")
-        else:
-            ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
-            print("Rel path is used.")
-        imgs = ds.variables['Ts'][:]
+        if not params['skip_prediction']:
 
-        tmp = []
+            # load data and store as images
+            # use whole path when abs path is given, else use data from 'data/prediction/raw'
+            if '/' in params['data']:
+                ds = netCDF4.Dataset(params['data'])
+                print("Abs path is used.")
+            else:
+                ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
+                print("Rel path is used.")
+            imgs = ds.variables['Ts'][:]
 
-        for im in imgs:
-            im = crop_center_square(im)
-            tmp.append(im)
+            tmp = []
 
-        imgs = tmp
+            for im in imgs:
+                im = crop_center_square(im)
+                tmp.append(im)
 
-        print("Start extracting images...")
+            imgs = tmp
 
-        # extract only every 4th image to avoid overlap
-        for idx, img in enumerate(imgs):
-            if(idx % 4 == 0):
-                plt.imsave(os.path.join(params['preprocessed_path'], '{}.png'.format(idx)), img, cmap='gray')
+            print("Start extracting images...")
+
+            # extract only every 4th image to avoid overlap
+            for idx, img in enumerate(imgs):
+                if(idx % 4 == 0):
+                    plt.imsave(os.path.join(params['preprocessed_path'], '{}.png'.format(idx)), img, cmap='gray')
 
         print("Start predicting images...")
 
