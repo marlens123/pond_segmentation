@@ -16,7 +16,8 @@ from wandb.keras import WandbMetricsLogger
 
 
 def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, backbone, optimizer, batch_size,
-                model, X_train_vis=None, X_test_vis=None, augmentation=None, class_weights=None, fold_no=None, training_mode='fine_tune'):
+                model, use_wandb=False, X_train_vis=None, X_test_vis=None, augmentation=None, class_weights=None, 
+                fold_no=None, training_mode='fine_tune'):
     """
     Training function.
 
@@ -40,6 +41,8 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, ba
         batch_size : int
         model : keras.engine.functional.Functional
             model defined before call
+        use_wandb : Bool
+            whether to use wandb for train monitoring
         augmentation : albumentations.core.composition.Compose
             specifies on-fly augmentation methods (if to be appplied; else None)
         class_weights : list
@@ -120,11 +123,15 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, ba
                                                            sea_ice_iou, ocean_iou, rounded_iou])
 
 
+    wandb = None
+    if use_wandb: 
+        wandb = WandbMetricsLogger()
+
     # define callbacks
     if training_mode == 'hyperparameter_tune':
         callbacks = [
             tf.keras.callbacks.CSVLogger('./metrics/scores/{0}/{1}.csv'.format(training_mode, pref)),
-            #WandbMetricsLogger()
+            wandb
         ]
 
     # when in fine-tuning, save weights of best performing model in terms of minimal val_loss
@@ -132,7 +139,7 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, ba
         callbacks = [
             keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
             tf.keras.callbacks.CSVLogger('./metrics/scores/{0}/{1}.csv'.format(training_mode, pref)),
-            #WandbMetricsLogger()
+            wandb
         ]
 
 

@@ -14,8 +14,7 @@ from utils.augmentation import get_training_augmentation, offline_augmentation
 from utils.train_helpers import compute_class_weights, patch_extraction
 from utils.train import run_train
 
-#import wandb
-#wandb.login()
+import wandb
 
 parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperparameter values were optimized during previous experiments.")
 
@@ -40,11 +39,13 @@ parser.add_argument("--use_class_weights", action='store_true', help="If the los
 parser.add_argument("--use_dropout", action='store_true', help="If to use dropout layers after upsampling operations in the decoder.")
 parser.add_argument("--pretrain", default="imagenet", type=str, choices=["imagenet", "none"], help="Either 'imagenet' to use encoder weights pretrained on ImageNet or None to train from scratch.")
 parser.add_argument("--freeze", action='store_true', help="Only takes effect when pretrain is not None. Whether to freeze encoder during training or allow fine-tuning of encoder weights.")
-
+parser.add_argument("--use_wandb", action='store_true', help="Whether to use wandb for train monitoring.")
 
 def main():
     args = parser.parse_args()
     params = vars(args)
+
+    wandb = params['use_wandb']
 
     # load data
     X = np.load(params['X'])
@@ -97,34 +98,34 @@ def main():
         if params['augmentation_design'] == 'offline':
             X_train, y_train = offline_augmentation(X_train, y_train, im_size=params['im_size'], mode=params['augmentation_technique'], factor=params['augmentation_factor'])
 
-        """
-        # tracking configuration
-        run = wandb.init(project='pond_segmentation',
-                            group=params['pref'],
-                            name='foldn_{}'.format(fold_no),
-                            config={
-                            "loss_function": params['loss'],
-                            "batch_size": params['batch_size'],
-                            "backbone": params['backbone'],
-                            "optimizer": params['optimizer'],
-                            "train_transfer": params['pretrain'],
-                            "augmentation": params['augmentation_design']
-                            }
-        )
-        config = wandb.config
-        """
+        if wandb:
+            wandb.login()
+            # tracking configuration
+            run = wandb.init(project='pond_segmentation',
+                                group=params['pref'],
+                                name='foldn_{}'.format(fold_no),
+                                config={
+                                "loss_function": params['loss'],
+                                "batch_size": params['batch_size'],
+                                "backbone": params['backbone'],
+                                "optimizer": params['optimizer'],
+                                "train_transfer": params['pretrain'],
+                                "augmentation": params['augmentation_design']
+                                }
+            )
+            config = wandb.config
 
         # run training
         scores, history = run_train(pref=pref, X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, num_epochs=params['num_epochs'],
                     loss=params['loss'], backbone=params['backbone'], optimizer=params['optimizer'], batch_size=params['batch_size'], 
-                    model=model, augmentation=on_fly, class_weights=class_weights, fold_no=fold_no, training_mode='hyperparameter_tune')
+                    model=model, wandb=wandb, augmentation=on_fly, class_weights=class_weights, fold_no=fold_no, training_mode='hyperparameter_tune')
 
         # store metrics for selecting the best values later
         val_loss_per_fold.append(scores[0])
         val_iou_per_fold.append(scores[1])
 
-        # close tracking for that fold
-        #wandb.join()
+        if wandb:
+            wandb.join()
 
         # increase fold number
         fold_no = fold_no + 1

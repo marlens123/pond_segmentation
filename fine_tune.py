@@ -6,8 +6,6 @@ import argparse
 from utils.train import run_train
 
 import wandb
-wandb.login()
-
 
 parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperparameter values were optimized during previous experiments.")
 
@@ -34,11 +32,13 @@ parser.add_argument("--use_class_weights", action='store_true', help="If the los
 parser.add_argument("--use_dropout", action='store_true', help="If to use dropout layers after upsampling operations in the decoder.")
 parser.add_argument("--pretrain", default="imagenet", type=str, choices=["imagenet", "none"], help="Either 'imagenet' to use encoder weights pretrained on ImageNet or None to train from scratch.")
 parser.add_argument("--freeze", action='store_true', help="Only takes effect when pretrain is not None. Whether to freeze encoder during training or allow fine-tuning of encoder weights.")
-
+parser.add_argument("--use_wandb", action='store_true', help="Whether to use wandb for train monitoring.")
 
 def main():
     args = parser.parse_args()
     params = vars(args)
+
+    wandb = params['use_wandb']
 
     # load data
     train_images = np.load(params['X_train'])
@@ -77,26 +77,29 @@ def main():
 
     print(model.summary())
 
-    run = wandb.init(project='pond_segmentation',
-                        group=params['pref'],
-                        name=params['pref'],
-                        config={
-                        "loss_function": params['loss'],
-                        "batch_size": params['batch_size'],
-                        "backbone": params['backbone'],
-                        "optimizer": params['optimizer'],
-                        "train_transfer": params['pretrain'],
-                        "augmentation": params['augmentation_design']
-                        }
-    )
-    config = wandb.config
+    if wandb:
+        wandb.login()
+        run = wandb.init(project='pond_segmentation',
+                            group=params['pref'],
+                            name=params['pref'],
+                            config={
+                            "loss_function": params['loss'],
+                            "batch_size": params['batch_size'],
+                            "backbone": params['backbone'],
+                            "optimizer": params['optimizer'],
+                            "train_transfer": params['pretrain'],
+                            "augmentation": params['augmentation_design']
+                            }
+        )
+        config = wandb.config
 
     # run training
     _, _ = run_train(pref=params['pref'], X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, num_epochs=params['num_epochs'],
             loss=params['loss'], backbone=params['backbone'], optimizer=params['optimizer'], batch_size=params['batch_size'], 
-            model=model, augmentation=on_fly, class_weights=class_weights)
+            model=model, wandb=wandb, augmentation=on_fly, class_weights=class_weights)
 
-    wandb.join()
+    if wandb:
+        wandb.join()
 
 if __name__ == "__main__":
     main()
