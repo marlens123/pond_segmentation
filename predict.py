@@ -14,10 +14,8 @@ parser.add_argument("--weights_path", default="weights/flight9_flight16.h5", typ
 parser.add_argument("--preprocessed_path", default="data/prediction/preprocessed", type=str, help="Path to folder that should store the preprocessed images.")
 parser.add_argument("--predicted_path", default="data/prediction/predicted", type=str, help="Path to folder that should store the predicted image masks.")
 parser.add_argument("--metrics_path", default="metrics/melt_pond_fraction/mpf.csv", type=str, help="Path to .csv file that should store the resulting mpf (if calculation is desired).")
-parser.add_argument("--mpf", action="store_false", help="Whether to calculate the melt pond fraction for the predicted flight.")
+parser.add_argument("--skip_mpf", action="store_true", help="Skips the calculation of the melt pond fraction for the predicted flight.")
 parser.add_argument("--skip_prediction", action="store_true", help="Skips prediction process. Can be used to directly perform mpf calculation. In that case, 'predicted_path' must contain predicted images.")
-
-parser.add_argument("--start_predict", action="store_true", help="")
 
 def main():
     args = parser.parse_args()
@@ -38,32 +36,30 @@ def main():
 
     if not params['skip_prediction']:
 
-        if not params['start_predict']:
+        # load data and store as images
+        # use whole path when abs path is given, else use data from 'data/prediction/raw'
+        if '/' in params['data']:
+            ds = netCDF4.Dataset(params['data'])
+            print("Abs path is used.")
+        else:
+            ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
+            print("Rel path is used.")
+        imgs = ds.variables['Ts'][:]
 
-            # load data and store as images
-            # use whole path when abs path is given, else use data from 'data/prediction/raw'
-            if '/' in params['data']:
-                ds = netCDF4.Dataset(params['data'])
-                print("Abs path is used.")
-            else:
-                ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
-                print("Rel path is used.")
-            imgs = ds.variables['Ts'][:]
+        tmp = []
 
-            tmp = []
+        for im in imgs:
+            im = crop_center_square(im)
+            tmp.append(im)
 
-            for im in imgs:
-                im = crop_center_square(im)
-                tmp.append(im)
+        imgs = tmp
 
-            imgs = tmp
+        print("Start extracting images...")
 
-            print("Start extracting images...")
-
-            # extract only every 4th image to avoid overlap
-            for idx, img in enumerate(imgs):
-                if(idx % 4 == 0):
-                    plt.imsave(os.path.join(params['preprocessed_path'], '{}.png'.format(idx)), img, cmap='gray')
+        # extract only every 4th image to avoid overlap
+        for idx, img in enumerate(imgs):
+            if(idx % 4 == 0):
+                plt.imsave(os.path.join(params['preprocessed_path'], '{}.png'.format(idx)), img, cmap='gray')
 
         print("Start predicting images...")
 
@@ -74,7 +70,7 @@ def main():
                 predict_image(img, 480, params['weights_path'], backbone='resnet34', train_transfer='imagenet', save_path=os.path.join(params['predicted_path'],'{}.png'.format(idx)), visualize=False)
 
     # optionally calculate melt pond fraction and store in csv file
-    if params['mpf']:
+    if not params['skip_mpf']:
         mpf = calculate_mpf(params['predicted_path'])
 
         headers = ['flight_date', 'melt_pond_fraction']
