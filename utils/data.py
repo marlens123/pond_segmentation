@@ -40,6 +40,11 @@ class Dataset:
     ):
         self.images_fps = images_ir.tolist()
         self.masks_fps = masks.tolist()
+
+        if not images_vis == None:
+            self.images_vis_fps = images_vis.tolist()
+        else:
+            self.images_vis_fps = None
         
         # convert str names to class values on masks
         self.class_values = [self.CLASSES.index(cls.lower()) for cls in classes]
@@ -47,13 +52,21 @@ class Dataset:
         self.augmentation = augmentation
         self.preprocessing = preprocessing
     
+    # return image / mask pair according to index
     def __getitem__(self, i):
-        
-        # read data as grayscale
-        image = self.images_fps[i]
-        image = np.array(image)
-        # reshape to 3 dims in last channel
-        image = expand_greyscale_channels(image)
+
+        if self.images_vis_fps == None:
+            # read data as grayscale
+            image = self.images_fps[i]
+            image = np.array(image)
+            # reshape to 3 dims in last channel
+            image = expand_greyscale_channels(image)
+        else:
+            image_ir = self.images_fps[i]
+            image_vis = self.images_vis_fps[i]
+            # image fusion of vis and ir: concatenate along channels axis
+            image = np.concatenate((image_ir, image_vis), axis=-1)
+            print(image.shape)
 
         mask = self.masks_fps[i]
         mask = np.array(mask)
@@ -64,10 +77,6 @@ class Dataset:
         mask = np.stack(masks, axis=-1).astype('float')
         background = 1 - mask.sum(axis=-1, keepdims=True)
         mask = np.concatenate((mask, background), axis=-1)
-
-        print(mask.shape)
-        print(np.unique(mask))
-        print(image.dtype)
 
         image = image.astype(np.float32)
         mask = mask.astype(np.float32)
