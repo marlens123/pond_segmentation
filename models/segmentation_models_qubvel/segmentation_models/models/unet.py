@@ -1,12 +1,16 @@
+"""
+U-Net code adapted from (c) 2018, Pavel Yakubovskiy.
 
-#Copyright (c) 2018, Pavel Yakubovskiy
+Added Dropout layers and Attention blocks.
+"""
 
 from keras_applications import get_submodules_from_kwargs
+import tensorflow as tf
 
 from ._common_blocks import Conv2dBn
 from ._utils import freeze_model
 from ..backbones.backbones_factory import Backbones
-from tensorflow.keras.layers import Dropout #### CHANGED ####
+from tensorflow.keras.layers import Conv2D, BatchNormalization, Activation, Dropout
 
 backend = None
 layers = None
@@ -26,10 +30,40 @@ def get_submodules():
         'utils': keras_utils,
     }
 
-
 # ---------------------------------------------------------------------
 #  Blocks
 # ---------------------------------------------------------------------
+
+class AttentionBlock(tf.keras.layers.Layer):
+    def __init__(self, F_int):
+        super(AttentionBlock, self).__init__()
+        
+        self.W_g = tf.keras.Sequential([
+            Conv2D(F_int, kernel_size=1, strides=1, padding='valid', use_bias=True),
+            BatchNormalization()
+        ])
+
+        self.W_x = tf.keras.Sequential([
+            Conv2D(F_int, kernel_size=1, strides=1, padding='valid', use_bias=True),
+            BatchNormalization()
+        ])
+
+        self.psi = tf.keras.Sequential([
+            Conv2D(1, kernel_size=1, strides=1, padding='valid', use_bias=True),
+            BatchNormalization(),
+            Activation('sigmoid')
+        ])
+
+        self.relu = Activation('relu')
+
+    def call(self, g, m):
+        g1 = self.W_g(g)
+        m1 = self.W_x(m)
+        psi = self.relu(g1 + m1)
+        psi = self.psi(psi)
+
+        return m * psi
+
 
 def Conv3x3BnReLU(filters, use_batchnorm, name=None):
     kwargs = get_submodules()
@@ -49,7 +83,7 @@ def Conv3x3BnReLU(filters, use_batchnorm, name=None):
     return wrapper
 
 
-def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False, use_dropout=False):
+def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False, use_dropout=False, add_attention=False):
     up_name = 'decoder_stage{}_upsampling'.format(stage)
     conv1_name = 'decoder_stage{}a'.format(stage)
     conv2_name = 'decoder_stage{}b'.format(stage)
@@ -61,9 +95,13 @@ def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False, use_dropout=Fa
         x = layers.UpSampling2D(size=2, name=up_name)(input_tensor)
 
         if use_dropout:
-            x = Dropout(0.5)(x) #### CHANGED ####
+            x = Dropout(0.5)(x)
 
         if skip is not None:
+            if add_attention:
+                print('attention!')
+                att = AttentionBlock(F_int=filters / 2)
+                skip = att(g=x, m=skip)
             x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
 
         x = Conv3x3BnReLU(filters, use_batchnorm, name=conv1_name)(x)
@@ -74,7 +112,7 @@ def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False, use_dropout=Fa
     return wrapper
 
 
-def DecoderTransposeX2Block(filters, stage, use_batchnorm=False, use_dropout=False):
+def DecoderTransposeX2Block(filters, stage, use_batchnorm=False, use_dropout=False, add_attention=False):
     transp_name = 'decoder_stage{}a_transpose'.format(stage)
     bn_name = 'decoder_stage{}a_bn'.format(stage)
     relu_name = 'decoder_stage{}a_relu'.format(stage)
@@ -95,7 +133,7 @@ def DecoderTransposeX2Block(filters, stage, use_batchnorm=False, use_dropout=Fal
         )(input_tensor)
 
         if use_dropout:
-            x = Dropout(0.5)(x) #### CHANGED ####
+            x = Dropout(0.5)(x)
 
         if use_batchnorm:
             x = layers.BatchNormalization(axis=bn_axis, name=bn_name)(x)
@@ -103,6 +141,10 @@ def DecoderTransposeX2Block(filters, stage, use_batchnorm=False, use_dropout=Fal
         x = layers.Activation('relu', name=relu_name)(x)
 
         if skip is not None:
+            if add_attention:
+                print('attention!')
+                att = AttentionBlock(F_int=filters / 2)
+                skip = att(g=x, m=skip)
             x = layers.Concatenate(axis=concat_axis, name=concat_name)([x, skip])
 
         x = Conv3x3BnReLU(filters, use_batchnorm, name=conv_block_name)(x)
@@ -125,7 +167,8 @@ def build_unet(
         classes=1,
         activation='sigmoid',
         use_batchnorm=True,
-        use_dropout=False, #### CHANGED ####
+        use_dropout=False,
+        add_attention=False
 ):
     input_ = backbone.input
     x = backbone.output
@@ -147,7 +190,7 @@ def build_unet(
         else:
             skip = None
 
-        x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm, use_dropout=use_dropout)(x, skip)
+        x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm, use_dropout=use_dropout, add_attention=add_attention)(x, skip)
 
     # model head (define number of output classes)
     x = layers.Conv2D(
@@ -182,7 +225,8 @@ def Unet(
         decoder_block_type='upsampling',
         decoder_filters=(256, 128, 64, 32, 16),
         decoder_use_batchnorm=True,
-        decoder_use_dropout=False, #### CHANGED ####
+        decoder_use_dropout=False,
+        decoder_add_attention=False,
         **kwargs
 ):
     """ Unet_ is a fully convolution neural network for image semantic segmentation
@@ -251,7 +295,8 @@ def Unet(
         activation=activation,
         n_upsample_blocks=len(decoder_filters),
         use_batchnorm=decoder_use_batchnorm,
-        use_dropout=decoder_use_dropout, #### CHANGED ####
+        use_dropout=decoder_use_dropout,
+        add_attention=decoder_add_attention
     )
 
     # lock encoder weights for fine-tuning
