@@ -30,7 +30,8 @@ def main():
     args = parser.parse_args()
     params = vars(args)
 
-    cfg = json.load(params['path_to_config'])
+    with open(params['path_to_config']) as f:
+        cfg = json.load(f)
 
     wandb = params['use_wandb']
 
