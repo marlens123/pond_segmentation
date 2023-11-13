@@ -13,6 +13,7 @@ import models.segmentation_models_qubvel as sm
 from utils.augmentation import get_training_augmentation, offline_augmentation
 from utils.train_helpers import compute_class_weights, patch_extraction
 from utils.train import run_train
+import json
 
 import wandb
 
@@ -26,24 +27,15 @@ parser.add_argument("--X", default="data/training/train_images.npy", type=str, h
 parser.add_argument("--y", default="data/training/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
 
 # hyperparameters
-parser.add_argument("--im_size", default=480, type=int, choices=[32, 64, 128, 256, 480], help="Patch size to train on. Choices are constrained because of patch extraction setup.")
-parser.add_argument("--num_epochs", default=100, type=int, help="Number of training epochs. The weights of the best performing training epoch will be stored.")
-parser.add_argument("--loss", default="focal_dice", type=str, choices=["categoricalCE", "focal_dice", "focal"], help="Loss function. E.g. 'categorical_CE' or 'focal_dice'. For more options see sm.")
-parser.add_argument("--backbone", default="resnet34", type=str, help="U-net backbone to use. For options see sm.")
-parser.add_argument("--optimizer", default="Adam", type=str, choices=["Adam", "SGD", "Adamax"], help="Optimizer to use. For options see sm.")
-parser.add_argument("--batch_size", default=4, type=int, help="Batch size. Adjust with respect to training set size and patch size.")
-parser.add_argument("--augmentation_design", default="on_fly", type=str, choices=["none", "offline", "on_fly"], help="Either None, 'offline' (fixed augmentation before training), or 'on_fly' (while feeding data into the model).")
-parser.add_argument("--augmentation_technique", default=4, type=int, choices=[0, 1, 2, 3, 4, 5], help="0 : flip, 1 : rotate, 2 : crop, 3 : brightness contrast, 4 : sharpen blur, 5 : Gaussian noise.")
-parser.add_argument("--augmentation_factor", default=2, type=int, help="Magnitude by which the dataset will be increased through augmentation. Only takes effect when augmentation_design is set 'offline'.")
-parser.add_argument("--use_class_weights", action='store_true', help="If the loss function should account for class imbalance.")
-parser.add_argument("--use_dropout", action='store_true', help="If to use dropout layers after upsampling operations in the decoder.")
-parser.add_argument("--pretrain", default="imagenet", type=str, choices=["imagenet", "none"], help="Either 'imagenet' to use encoder weights pretrained on ImageNet or None to train from scratch.")
-parser.add_argument("--freeze", action='store_true', help="Only takes effect when pretrain is not None. Whether to freeze encoder during training or allow fine-tuning of encoder weights.")
+parser.add_argument("--path_to_config", default="config/ho_patchsize_32.json", type=str, help="Path to config file that stores hyperparameter setting. For more information see 'config/README.md'.")
+
 parser.add_argument("--use_wandb", action='store_true', help="Whether to use wandb for train monitoring.")
 
 def main():
     args = parser.parse_args()
     params = vars(args)
+
+    cfg = json.load(params['path_to_config'])
 
     wandb = params['use_wandb']
 
@@ -53,16 +45,16 @@ def main():
 
     # set augmentation
     on_fly = None
-    if params['augmentation_design'] == 'on_fly':
-        on_fly = get_training_augmentation(im_size=params['im_size'], mode=params['augmentation_technique'])
+    if cfg.augmentation['design'] == 'on_fly':
+        on_fly = get_training_augmentation(im_size=cfg.model['im_size'], mode=cfg.augmentation['technique'])
 
     # set pretraining
-    if params['pretrain'] == "none":
-        params['pretrain'] = None
+    if cfg.model['pretrain'] == "none":
+        cfg.model['pretrain'] = None
 
     # construct model
-    model = sm.Unet(params['backbone'], input_shape=(params['im_size'], params['im_size'], 3), classes=3, activation='softmax', encoder_weights=params['pretrain'],
-                    decoder_use_dropout=params['use_dropout'], encoder_freeze=params['freeze'])  
+    model = sm.Unet(cfg.model['backbone'], input_shape=(cfg.model['im_size'], cfg.model['im_size'], 3), classes=cfg.model['classes'], activation=cfg.model['activation'], encoder_weights=cfg.model['pretrain'],
+                    decoder_use_dropout=cfg.model['use_dropout'], encoder_freeze=cfg.model['freeze'])  
 
     print(model.summary())
 
@@ -84,19 +76,19 @@ def main():
         pref = base_pref + "_foldn{}".format(fold_no)
 
         # compute class weights
-        if params['use_class_weights']:
+        if cfg.training['use_class_weights']:
             class_weights = compute_class_weights(y[train])
             print("Class weights are...:", class_weights)
         else:
             class_weights = None
 
         # patch extraction
-        X_train, y_train = patch_extraction(X[train], y[train], size=params['im_size'])
-        X_test, y_test = patch_extraction(X[test], y[test], size=params['im_size'])
+        X_train, y_train = patch_extraction(X[train], y[train], size=cfg.model['im_size'])
+        X_test, y_test = patch_extraction(X[test], y[test], size=cfg.model['im_size'])
 
         # offline augmentation if selected
-        if params['augmentation_design'] == 'offline':
-            X_train, y_train = offline_augmentation(X_train, y_train, im_size=params['im_size'], mode=params['augmentation_technique'], factor=params['augmentation_factor'])
+        if cfg.augmentation['design'] == 'offline':
+            X_train, y_train = offline_augmentation(X_train, y_train, im_size=cfg.model['im_size'], mode=cfg.augmentation['technique'], factor=cfg.augmentation['factor'])
 
         if wandb:
             wandb.login()
@@ -105,19 +97,18 @@ def main():
                                 group=params['pref'],
                                 name='foldn_{}'.format(fold_no),
                                 config={
-                                "loss_function": params['loss'],
-                                "batch_size": params['batch_size'],
-                                "backbone": params['backbone'],
-                                "optimizer": params['optimizer'],
-                                "train_transfer": params['pretrain'],
-                                "augmentation": params['augmentation_design']
+                                "loss_function": cfg.training['loss'],
+                                "batch_size": cfg.training['batch_size'],
+                                "backbone": cfg.training['backbone'],
+                                "optimizer": cfg.training['optimizer'],
+                                "train_transfer": cfg.model['pretrain'],
+                                "augmentation": cfg.augmentation['augmentation_design']
                                 }
             )
             config = wandb.config
 
         # run training
-        scores, history = run_train(pref=pref, X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, num_epochs=params['num_epochs'],
-                    loss=params['loss'], backbone=params['backbone'], optimizer=params['optimizer'], batch_size=params['batch_size'], 
+        scores, history = run_train(pref=pref, X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, train_config=cfg.training,
                     model=model, wandb=wandb, augmentation=on_fly, class_weights=class_weights, fold_no=fold_no, training_mode='hyperparameter_tune')
 
         # store metrics for selecting the best values later
