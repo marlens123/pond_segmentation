@@ -58,7 +58,7 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
     
     # training dataset
     train_dataset = Dataset(
-        images=X_train_ir, 
+        images_ir=X_train_ir, 
         masks=y_train, 
         images_vis=X_train_vis,
         classes=CLASSES, 
@@ -68,7 +68,7 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
 
     # validation dataset
     valid_dataset = Dataset(
-        images=X_test_ir,
+        images_ir=X_test_ir,
         masks=y_test, 
         images_vis=X_test_vis,
         classes=CLASSES,
@@ -117,16 +117,10 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
     model.compile(optimizer=OPTIMIZER, loss=LOSS, metrics=[mean_iou, weighted_iou, f1, precision, recall, melt_pond_iou,
                                                            sea_ice_iou, ocean_iou, rounded_iou])
 
-
-    wandb = None
-    if use_wandb: 
-        wandb = WandbMetricsLogger()
-
     # define callbacks
     if training_mode == 'hyperparameter_tune':
         callbacks = [
             tf.keras.callbacks.CSVLogger('./metrics/scores/{0}/{1}.csv'.format(training_mode, pref)),
-            wandb
         ]
 
     # when in fine-tuning, save weights of best performing model in terms of minimal val_loss
@@ -134,8 +128,10 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
         callbacks = [
             keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
             tf.keras.callbacks.CSVLogger('./metrics/scores/{0}/{1}.csv'.format(training_mode, pref)),
-            wandb
         ]
+
+    if use_wandb:
+        callbacks.append(WandbMetricsLogger())
 
 
     history = model.fit(train_dataloader,
