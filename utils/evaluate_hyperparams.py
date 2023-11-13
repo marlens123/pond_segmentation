@@ -38,6 +38,10 @@ def main():
     with open(params['path_to_config']) as f:
         cfg = json.load(f)
 
+    cfg_model = cfg['model']
+    cfg_augmentation = cfg['augmentation']
+    cfg_training = cfg['training']
+
     wandb = params['use_wandb']
 
     # load data
@@ -46,16 +50,16 @@ def main():
 
     # set augmentation
     on_fly = None
-    if cfg.augmentation['design'] == 'on_fly':
-        on_fly = get_training_augmentation(im_size=cfg.model['im_size'], mode=cfg.augmentation['technique'])
+    if cfg_augmentation['design'] == 'on_fly':
+        on_fly = get_training_augmentation(im_size=cfg_model['im_size'], mode=cfg_augmentation['technique'])
 
     # set pretraining
-    if cfg.model['pretrain'] == "none":
-        cfg.model['pretrain'] = None
+    if cfg_model['pretrain'] == "none":
+        cfg_model['pretrain'] = None
 
     # construct model
-    model = sm.Unet(cfg.model['backbone'], input_shape=(cfg.model['im_size'], cfg.model['im_size'], 3), classes=cfg.model['classes'], activation=cfg.model['activation'], encoder_weights=cfg.model['pretrain'],
-                    decoder_use_dropout=cfg.model['use_dropout'], encoder_freeze=cfg.model['freeze'])  
+    model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
+                    decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'])  
 
     print(model.summary())
 
@@ -77,19 +81,19 @@ def main():
         pref = base_pref + "_foldn{}".format(fold_no)
 
         # compute class weights
-        if cfg.training['use_class_weights']:
+        if cfg_training['use_class_weights']:
             class_weights = compute_class_weights(y[train])
             print("Class weights are...:", class_weights)
         else:
             class_weights = None
 
         # patch extraction
-        X_train, y_train = patch_extraction(X[train], y[train], size=cfg.model['im_size'])
-        X_test, y_test = patch_extraction(X[test], y[test], size=cfg.model['im_size'])
+        X_train, y_train = patch_extraction(X[train], y[train], size=cfg_model['im_size'])
+        X_test, y_test = patch_extraction(X[test], y[test], size=cfg_model['im_size'])
 
         # offline augmentation if selected
-        if cfg.augmentation['design'] == 'offline':
-            X_train, y_train = offline_augmentation(X_train, y_train, im_size=cfg.model['im_size'], mode=cfg.augmentation['technique'], factor=cfg.augmentation['factor'])
+        if cfg_augmentation['design'] == 'offline':
+            X_train, y_train = offline_augmentation(X_train, y_train, im_size=cfg_model['im_size'], mode=cfg_augmentation['technique'], factor=cfg_augmentation['factor'])
 
         if wandb:
             wandb.login()
@@ -98,18 +102,18 @@ def main():
                                 group=params['pref'],
                                 name='foldn_{}'.format(fold_no),
                                 config={
-                                "loss_function": cfg.training['loss'],
-                                "batch_size": cfg.training['batch_size'],
-                                "backbone": cfg.training['backbone'],
-                                "optimizer": cfg.training['optimizer'],
-                                "train_transfer": cfg.model['pretrain'],
-                                "augmentation": cfg.augmentation['augmentation_design']
+                                "loss_function": cfg_training['loss'],
+                                "batch_size": cfg_training['batch_size'],
+                                "backbone": cfg_training['backbone'],
+                                "optimizer": cfg_training['optimizer'],
+                                "train_transfer": cfg_model['pretrain'],
+                                "augmentation": cfg_augmentation['augmentation_design']
                                 }
             )
             config = wandb.config
 
         # run training
-        scores, history = run_train(pref=pref, X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, train_config=cfg.training,
+        scores, history = run_train(pref=pref, X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, train_config=cfg_training,
                     model=model, wandb=wandb, augmentation=on_fly, class_weights=class_weights, fold_no=fold_no, training_mode='hyperparameter_tune')
 
         # store metrics for selecting the best values later
