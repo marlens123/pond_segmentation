@@ -15,7 +15,7 @@ The data used is not published yet.
 6. [Background](https://github.com/marlens123/pond_segmentation/blob/main/README.md#background)
 7. [Model Architecture](https://github.com/marlens123/pond_segmentation/blob/main/README.md#model-architecture)
 8. [Disclaimer](https://github.com/marlens123/pond_segmentation/blob/main/README.md#disclaimer)
-9. [References]()
+9. [References](https://github.com/marlens123/pond_segmentation/blob/main/README.md#references)
 
 ### Publications
 [Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to Bachelor thesis.
@@ -90,5 +90,4 @@ and Dr. Ulf Krumnack ([Computer Vision Group](https://www.ikw.uni-osnabrueck.de/
 [1] Kanzow, Thorsten (2023). The Expedition PS131 of the Research Vessel POLARSTERN to the
 Fram Strait in 2022. Ed. by Horst Bornemann and Susan Amir Sawadkuhi. Bremerhaven. DOI: 10.57738/BzPM\_0770\_2023.
 
-### Contact
-mareil@uni-osnabrueck.de
+**Contact**: mareil@uni-osnabrueck.de
