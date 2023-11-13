@@ -14,17 +14,17 @@ The data used is not published yet.
 ![pred_smpl](https://github.com/marlens123/pond_segmentation/assets/80780236/e0298018-ea2d-44a4-9711-a00b69464980)
 
 ## Table of Contents
-2. [Setup](https://github.com/marlens123/pond_segmentation/blob/main/README.md#setup)
-3. [Quickstart](https://github.com/marlens123/pond_segmentation/blob/main/README.md#quickstart)
+1. [Setup](https://github.com/marlens123/pond_segmentation/blob/main/README.md#setup)
+2. [Quickstart](https://github.com/marlens123/pond_segmentation/blob/main/README.md#quickstart)
    1. [Prediction](https://github.com/marlens123/pond_segmentation/blob/main/README.md#prediction)
    2. [Training](https://github.com/marlens123/pond_segmentation/blob/main/README.md#training)
    3. [Hyperparameter Tuning](https://github.com/marlens123/pond_segmentation/blob/main/README.md#hyperparameter-tuning)
-5. [Additional Files](https://github.com/marlens123/pond_segmentation/blob/main/README.md#additional-files)
-6. [Interpretation of Results](https://github.com/marlens123/pond_segmentation/blob/main/README.md#interpretation-of-results)
-7. [Background](https://github.com/marlens123/pond_segmentation/blob/main/README.md#background)
-8. [Model Architecture](https://github.com/marlens123/pond_segmentation/blob/main/README.md#model-architecture)
+3. [Additional Files](https://github.com/marlens123/pond_segmentation/blob/main/README.md#additional-files)
+4. [Interpretation of Results](https://github.com/marlens123/pond_segmentation/blob/main/README.md#interpretation-of-results)
+5. [Background](https://github.com/marlens123/pond_segmentation/blob/main/README.md#background)
+6. [Model Architecture](https://github.com/marlens123/pond_segmentation/blob/main/README.md#model-architecture)
 9. [Disclaimer](https://github.com/marlens123/pond_segmentation/blob/main/README.md#disclaimer)
-10. [References](https://github.com/marlens123/pond_segmentation/blob/main/README.md#references)
+8. [References](https://github.com/marlens123/pond_segmentation/blob/main/README.md#references)
 
 ## Setup
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
