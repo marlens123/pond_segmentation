@@ -6,6 +6,17 @@ The model is a U-net with ResNet34 backbone, pretrained on ImageNet. Current wor
 
 The data used is not published yet.
 
+### Table of Contents
+1. Publications
+2. Setup
+3. Quickstart
+4. Additional Files
+5. Interpretation of Results
+6. Background
+7. Model Architecture
+8. Disclaimer
+9. References
+
 ### Publications
 [Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to Bachelor thesis.
 
