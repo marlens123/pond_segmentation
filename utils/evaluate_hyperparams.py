@@ -58,8 +58,13 @@ def main():
         cfg_model['pretrain'] = None
 
     # construct model
-    model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
-                    decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'])  
+    if cfg_model['architecture'] == 'base_unet':
+        model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
+                        decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'])  
+   
+    elif cfg_model['architecture'] == 'att_unet':
+        model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
+                        decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'], decoder_add_attention=True)  
 
     print(model.summary())
 
