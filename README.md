@@ -10,7 +10,7 @@ The data used is not published yet.
 1. [Publications](https://github.com/marlens123/pond_segmentation/blob/main/README.md#publications)
 2. [Setup](https://github.com/marlens123/pond_segmentation/blob/main/README.md#setup)
 3. [Quickstart](https://github.com/marlens123/pond_segmentation/blob/main/README.md#quickstart)
-4. [Additional Files]()
+4. [Additional Files](https://github.com/marlens123/pond_segmentation/blob/main/README.md#additional-files)
 5. [Interpretation of Results]()
 6. [Background]()
 7. [Model Architecture]()
