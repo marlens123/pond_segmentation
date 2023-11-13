@@ -6,10 +6,14 @@ The model is a U-net with ResNet34 backbone, pretrained on ImageNet. Current wor
 
 The data used is not published yet.
 
+## Publications
+[Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to Bachelor thesis.
+
+[Link](https://te.ma/art/ut5cb0/reil-melting-ponds-arctic-sea/) to related essay.
+
 ![pred_smpl](https://github.com/marlens123/pond_segmentation/assets/80780236/e0298018-ea2d-44a4-9711-a00b69464980)
 
 ## Table of Contents
-1. [Publications](https://github.com/marlens123/pond_segmentation/blob/main/README.md#publications)
 2. [Setup](https://github.com/marlens123/pond_segmentation/blob/main/README.md#setup)
 3. [Quickstart](https://github.com/marlens123/pond_segmentation/blob/main/README.md#quickstart)
    1. [Prediction](https://github.com/marlens123/pond_segmentation/blob/main/README.md#prediction)
@@ -21,11 +25,6 @@ The data used is not published yet.
 8. [Model Architecture](https://github.com/marlens123/pond_segmentation/blob/main/README.md#model-architecture)
 9. [Disclaimer](https://github.com/marlens123/pond_segmentation/blob/main/README.md#disclaimer)
 10. [References](https://github.com/marlens123/pond_segmentation/blob/main/README.md#references)
-
-## Publications
-[Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to Bachelor thesis.
-
-[Link](https://te.ma/art/ut5cb0/reil-melting-ponds-arctic-sea/) to related essay.
 
 ## Setup
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
