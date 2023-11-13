@@ -94,7 +94,7 @@ def main():
 
     # run training
     _, _ = run_train(pref=params['pref'], X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, train_config=cfg_training,
-            model=model, wandb=wandb, augmentation=on_fly, class_weights=class_weights)
+            model=model, use_wandb=wandb, augmentation=on_fly, class_weights=class_weights)
 
     if wandb:
         wandb.join()
