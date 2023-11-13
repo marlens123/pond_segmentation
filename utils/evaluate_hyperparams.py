@@ -27,7 +27,7 @@ parser.add_argument("--X", default="data/training/train_images.npy", type=str, h
 parser.add_argument("--y", default="data/training/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
 
 # hyperparameters
-parser.add_argument("--path_to_config", default="config/ho_patchsize_32.json", type=str, help="Path to config file that stores hyperparameter setting. For more information see 'config/README.md'.")
+parser.add_argument("--path_to_config", default="config/hyperparameter_tune/patchsize_32.json", type=str, help="Path to config file that stores hyperparameter setting. For more information see 'config/README.md'.")
 
 parser.add_argument("--use_wandb", action='store_true', help="Whether to use wandb for train monitoring.")
 

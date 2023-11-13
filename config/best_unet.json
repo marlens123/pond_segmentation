@@ -20,7 +20,6 @@
     "loss": "focal_dice",
     "backbone": "resnet34",
     "optimizer": "Adam",
-    "batch_size": 32,
-    "learning_rate": 0.001
+    "batch_size": 2
   }
 }

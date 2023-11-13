@@ -1,0 +1,26 @@
+{
+    "model": {
+      "architecture": "unet",
+      "backbone": "resnet34",
+      "im_size": 480,
+      "classes": 3,
+      "activation": "softmax",
+      "pretrain": "imagenet",
+      "use_dropout": false,
+      "freeze": false
+    },
+    "augmentation": {
+      "design": "none",
+      "technique": 4,
+      "factor": 2
+    },
+    "training": {
+      "use_class_weights": true,
+      "num_epochs": 100,
+      "loss": "focal_dice",
+      "backbone": "resnet34",
+      "optimizer": "Adam",
+      "batch_size": 2
+    }
+  }
+  

@@ -29,8 +29,8 @@ So far, melt pond fraction results are only exemplary because of insufficient mo
 
 To fine-tune the model:
 
-- Run ```python fine_tune.py --pref [pref_name] --use_dropout --use_class_weights```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/training/``` will be used.
-- Evaluation scores can be found in ```metrics/scores/[pref_name].csv```. Resulting model weights can be found in ```weights/best_model[pref_name].h5```
+- Run ```python fine_tune.py --pref [pref_name]```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/training/``` and hyperparameter setting defined in ```config/best_unet.json``` will be used.
+- Evaluation scores can be found in ```metrics/scores/[pref_name].csv```. Resulting model weights can be found in ```weights/best_model[pref_name].h5```.
 
 In this work, hyperparameters have been investigated sequentially. To reproduce hyperparameter optimization using k-crossfold validation:
 
