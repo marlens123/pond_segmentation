@@ -15,9 +15,8 @@ import models.segmentation_models_qubvel as sm
 from wandb.keras import WandbMetricsLogger
 
 
-def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, backbone, optimizer, batch_size,
-                model, use_wandb=False, X_train_vis=None, X_test_vis=None, augmentation=None, class_weights=None, 
-                fold_no=None, training_mode='fine_tune'):
+def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model, use_wandb=False, X_train_vis=None, 
+              X_test_vis=None, augmentation=None, class_weights=None, fold_no=None, training_mode='fine_tune'):
     """
     Training function.
 
@@ -33,12 +32,8 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, ba
             test images
         y_test : numpy.ndarray
             test labels
-        num_epochs : int
-            number of epochs
-        loss : str
-        backbone : str
-        optimizer : str
-        batch_size : int
+        train_config : dict
+            stores num_epochs, loss, backbone, optimizer, batch_size, learning_rate
         model : keras.engine.functional.Functional
             model defined before call
         use_wandb : Bool
@@ -68,7 +63,7 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, ba
         images_vis=X_train_vis,
         classes=CLASSES, 
         augmentation=augmentation,
-        preprocessing=get_preprocessing(sm.get_preprocessing(backbone)),
+        preprocessing=get_preprocessing(sm.get_preprocessing(train_config['backbone'])),
     )
 
     # validation dataset
@@ -77,32 +72,32 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, ba
         masks=y_test, 
         images_vis=X_test_vis,
         classes=CLASSES,
-        preprocessing=get_preprocessing(sm.get_preprocessing(backbone)),
+        preprocessing=get_preprocessing(sm.get_preprocessing(train_config['backbone'])),
     )
 
-    train_dataloader = Dataloder(train_dataset, batch_size=batch_size, shuffle=True)
+    train_dataloader = Dataloder(train_dataset, batch_size=train_config['batch_size'], shuffle=True)
     valid_dataloader = Dataloder(valid_dataset, batch_size=1, shuffle=False)
 
     # define loss
-    if loss == 'jaccard':
+    if train_config['loss'] == 'jaccard':
         LOSS = sm.losses.JaccardLoss(class_weights=class_weights)
-    elif loss == 'focal_dice':
+    elif train_config['loss'] == 'focal_dice':
         dice_loss = sm.losses.DiceLoss(class_weights=class_weights) 
         focal_loss = sm.losses.CategoricalFocalLoss()
         LOSS = dice_loss + (1 * focal_loss)
-    elif loss == 'categoricalCE':
+    elif train_config['loss'] == 'categoricalCE':
         LOSS = sm.losses.CategoricalCELoss(class_weights=class_weights)
-    elif loss== 'focal':
+    elif train_config['loss']== 'focal':
         LOSS = sm.losses.CategoricalFocalLoss()
     else:
         print('No loss function specified')
 
     # define optimizer
-    if optimizer == 'Adam':
+    if train_config['optimizer'] == 'Adam':
         OPTIMIZER = keras.optimizers.Adam()
-    elif optimizer == 'SGD':
+    elif train_config['optimizer'] == 'SGD':
         OPTIMIZER = keras.optimizer.SGD()
-    elif optimizer == 'Adamax':
+    elif train_config['optimizer'] == 'Adamax':
         OPTIMIZER = keras.optimizer.Adamax()
     else:
         print('No optimizer specified')
@@ -147,7 +142,7 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, num_epochs, loss, ba
                         verbose=1,
                         callbacks=callbacks,
                         steps_per_epoch=len(train_dataloader), 
-                        epochs=num_epochs,  
+                        epochs=train_config['num_epochs'],  
                         validation_data=valid_dataloader, 
                         validation_steps=len(valid_dataloader),
                         shuffle=False)
