@@ -138,7 +138,7 @@ def smooth_patch_predict(model, image, patch_size, model_preprocessing, smooth, 
 
     return final_prediction
 
-def predict_image(img, im_size, weights, backbone='resnet34', train_transfer='imagenet', smooth=False, save_path=None, visualize=True):
+def predict_image(img, im_size, weights, arch='unet', backbone='resnet34', train_transfer='imagenet', smooth=False, save_path=None, visualize=True):
     """
     Preprocesses image for prediction, loads model with weights and uses model to predict segmentation mask.
     """
@@ -148,7 +148,14 @@ def predict_image(img, im_size, weights, backbone='resnet34', train_transfer='im
 
     prepro = get_preprocessing(sm.get_preprocessing(BACKBONE))
 
-    model = sm.Unet(BACKBONE, input_shape=(im_size, im_size, 3), classes=3, activation='softmax', encoder_weights=TRAIN_TRANSFER)
+    # unet
+    if arch=='unet':
+        model = sm.Unet(BACKBONE, input_shape=(im_size, im_size, 3), classes=3, activation='softmax', encoder_weights=TRAIN_TRANSFER)
+   
+    # attention unet
+    elif arch=='att_unet':
+        model = sm.Unet(BACKBONE, input_shape=(im_size, im_size, 3), classes=3, activation='softmax', encoder_weights=TRAIN_TRANSFER, decoder_add_attention=True)
+
     model.load_weights(WEIGHTS)
 
     if smooth:

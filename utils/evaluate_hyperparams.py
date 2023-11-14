@@ -119,7 +119,7 @@ def main():
 
         # run training
         scores, history = run_train(pref=pref, X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, train_config=cfg_training,
-                    model=model, use_wandb=wandb, augmentation=on_fly, class_weights=class_weights, fold_no=fold_no, training_mode='hyperparameter_tune')
+                    model=model, model_arch=cfg_model['architecture'], use_wandb=wandb, augmentation=on_fly, class_weights=class_weights, fold_no=fold_no, training_mode='hyperparameter_tune')
 
         # store metrics for selecting the best values later
         val_loss_per_fold.append(scores[0])
