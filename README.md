@@ -36,8 +36,8 @@ This code requires Python 3.10. Install the required packages using ```pip insta
 If you want to use the current optimized model to segment images and extract melt pond fraction for a specific flight:
 
 - Insert the respective ```netCDF``` file into ```data/prediction/raw/```.
-- Run ```python predict.py --data [name_of_netCDF_file]```.
-- Predicted images can be found in ```data/prediction/predicted/```. The resulting melt pond fraction can be found in ```metrics/melt_pond_fraction/mpf.csv```.
+- Run ```python predict.py --pref [pref_name] --data [name_of_netCDF_file]```. To be able to inspect prediction results as grayscale images, add ```--convert_to_grayscale```.
+- Predicted images can be found in ```data/prediction/predicted/```. The resulting melt pond fraction can be found in ```metrics/melt_pond_fraction/```.
 
 So far, melt pond fraction results are only exemplary because of insufficient model performance.
 
