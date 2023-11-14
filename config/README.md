@@ -1,46 +1,80 @@
 # Variable Description Training Config
 
-Clarification of values that are not straight forward.
+Explanation of most important config values.
 
 ## Model Configuration
 
-### 'model.architecture'
+#### 'model.architecture'
 
-- **Description**:
-- **Possible Values**:
+- **Description**: Model architecture used. 'att_unet' uses attention blocks in the decoder (after upsampling / dropout and before concatenation).
+- **Type**: str
+- **Possible Values**: 'base_unet', 'att_unet'
 
-### 'model.backbone'
+#### 'model.backbone'
 
-- **Description**:
-- **Possible Values**:
+- **Description**: Backbone used as encoder.
+- **Type**: str
+- **Possible Values**: see ```models/segmentation_models/segmentation_models/backbones/backbones_factory.py```. In initial experiments, vgg16 and inceptionv3 resulted in worse performance than resnet34.
 
-### 'model.im_size'
+#### 'model.im_size'
+- **Description**: Patch size used for training. Choices are constrained because of patch extraction setup.
+- **Type**: int
+- **Possible Values**: 32, 64, 128, 256
 
-- **Description**: Patch size used for training
-- **Possible Values**:
+#### 'model.pretrain'
+- **Description**: Either 'imagenet' to use encoder weights pretrained on ImageNet or 'none' to train from scratch.
+- **Type**: str
+- **Possible Values**: 'imagenet', 'none'
 
-### 'model.architecture'
+#### 'model.use_dropout'
+- **Description**: Whether to use dropout layers in the decoder (after upsampling and before concatenation).
+- **Type**: bool
+- **Possible Values**: true, false
 
-- **Description**:
-- **Possible Values**:
+#### 'model.freeze'
+- **Description**: Only takes effect when pretrain is not None. Whether to freeze encoder during training or allow fine-tuning of encoder weights.
+- **Type**: bool
+- **Possible Values**: true, false
 
-### 'model.architecture'
+## Augmentation Configuration
 
-- **Description**:
-- **Possible Values**:
+#### 'augmentation.design'
+- **Description**: Either 'none', 'offline' (fixed augmentation before training), or 'on_fly' (while feeding data into the model).
+- **Type**: str
+- **Possible Values**: 'on_fly', 'offline', 'none'
+
+#### 'augmentation.technique'
+- **Description**: 0 : flip, 1 : rotate, 2 : crop, 3 : brightness contrast, 4 : sharpen blur, 5 : Gaussian noise. Most augmentation techniques resulted in decreasing performance in initial experiments. To add / combine methods, change ```utils/augmentation.py```.
+- **Type**: int
+- **Possible Values**: 0, 1, 2, 3, 4, 5
+
+#### 'augmentation.factor'
+- **Description**: Magnitude by which the dataset will be increased through augmentation. Only takes effect when augmentation_design is set 'offline'.
+- **Type**: int
 
 
+## Training Configuration
 
-#parser.add_argument("--im_size", default=480, type=int, choices=[32, 64, 128, 256, 480], help="Patch size to train on. Choices are constrained because of patch extraction setup.")
-#parser.add_argument("--num_epochs", default=100, type=int, help="Number of training epochs. The weights of the best performing training epoch will be stored.")
-#parser.add_argument("--loss", default="focal_dice", type=str, choices=["categoricalCE", "focal_dice", "focal"], help="Loss function. E.g. 'categorical_CE' or 'focal_dice'. For more options see sm.")
-#parser.add_argument("--backbone", default="resnet34", type=str, help="U-net backbone to use. For options see sm.")
-#parser.add_argument("--optimizer", default="Adam", type=str, choices=["Adam", "SGD", "Adamax"], help="Optimizer to use. For options see sm.")
-#parser.add_argument("--batch_size", default=2, type=int, help="Batch size. Adjust with respect to training set size and patch size.")
-#parser.add_argument("--augmentation_design", default="on_fly", type=str, choices=["none", "offline", "on_fly"], help="Either None, 'offline' (fixed augmentation before training), or 'on_fly' (while feeding data into the model).")
-#parser.add_argument("--augmentation_technique", default=4, type=int, choices=[0, 1, 2, 3, 4, 5], help="0 : flip, 1 : rotate, 2 : crop, 3 : brightness contrast, 4 : sharpen blur, 5 : Gaussian noise.")
-#parser.add_argument("--augmentation_factor", default=2, type=int, help="Magnitude by which the dataset will be increased through augmentation. Only takes effect when augmentation_design is set 'offline'.")
-#parser.add_argument("--use_class_weights", action='store_true', help="If the loss function should account for class imbalance.")
-#parser.add_argument("--use_dropout", action='store_true', help="If to use dropout layers after upsampling operations in the decoder.")
-#parser.add_argument("--pretrain", default="imagenet", type=str, choices=["imagenet", "none"], help="Either 'imagenet' to use encoder weights pretrained on ImageNet or None to train from scratch.")
-#parser.add_argument("--freeze", action='store_true', help="Only takes effect when pretrain is not None. Whether to freeze encoder during training or allow fine-tuning of encoder weights.")
+#### 'training.use_class_weights'
+- **Description**: If the loss function should account for class imbalance.
+- **Type**: bool
+- **Possible Values**: true, false
+
+#### 'training.num_epochs'
+- **Description**: Number of training epochs. The weights of the best performing training epoch will be stored.
+- **Type**: int
+
+#### 'training.loss'
+- **Description**: Loss function. 
+- **Type**: str
+- **Possible Values**: 'categoricalCE', 'focal', 'focal_dice'. For more options see sm (must be added in ```utils/train.py```).
+
+#### 'training.optimizer'
+- **Description**: Optimizer used.
+- **Type**: str
+- **Possible Values**: 'Adam', 'Adamax', 'SGD' implemented. For more options see sm (must be added in ```utils/train.py```).
+
+### 'model.batch_size'
+- **Description**: Batch size used.
+- **Type**: str
+- **Possible Values**: Should be small because of small training data. Can be increased for smaller patch sizes.
