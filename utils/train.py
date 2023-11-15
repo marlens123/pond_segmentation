@@ -36,6 +36,8 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
             stores num_epochs, loss, backbone, optimizer, batch_size, learning_rate
         model : keras.engine.functional.Functional
             model defined before call
+        model_arch : str
+            model architecture 
         use_wandb : Bool
             whether to use wandb for train monitoring
         augmentation : albumentations.core.composition.Compose

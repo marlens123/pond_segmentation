@@ -14,10 +14,10 @@ parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperpa
 parser.add_argument("--pref", default="ft_001", type=str, help="Identifier for the run. Model scores will be stored with this prefix.")
 
 # data
-parser.add_argument("--path_to_X_train", default="data/training/train_images.npy", type=str, help="Path to training images in .npy file format.")
-parser.add_argument("--path_to_y_train", default="data/training/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
-parser.add_argument("--path_to_X_test", default="data/training/test_images.npy", type=str, help="Path to testing images in .npy file format.")
-parser.add_argument("--path_to_y_test", default="data/training/test_masks.npy", type=str, help="Path to testing masks in .npy file format.")
+parser.add_argument("--path_to_X_train", default="data/training/flight9_flight16/train_images.npy", type=str, help="Path to training images in .npy file format.")
+parser.add_argument("--path_to_y_train", default="data/training/flight9_flight16/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
+parser.add_argument("--path_to_X_test", default="data/training/flight9_flight16/test_images.npy", type=str, help="Path to testing images in .npy file format.")
+parser.add_argument("--path_to_y_test", default="data/training/flight9_flight16/test_masks.npy", type=str, help="Path to testing masks in .npy file format.")
 
 # hyperparameters
 parser.add_argument("--path_to_config", default="config/best_unet.json", type=str, help="Path to config file that stores hyperparameter setting. For more information see 'config/README.md'.")
@@ -74,7 +74,7 @@ def main():
         cfg_model['pretrain'] = None
 
     # construct model
-    if cfg_model['architecture'] == 'base_unet':
+    if cfg_model['architecture'] == 'unet':
         model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
                         dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze'])  
    
