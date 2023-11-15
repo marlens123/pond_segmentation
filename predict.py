@@ -26,33 +26,40 @@ def main():
     params = vars(args)
 
     # add prefix to storage paths and create folder
-    params['preprocessed_path'] = os.path.join(params['preprocessed_path'], params['pref'])
-    os.makedirs(params['preprocessed_path'], exist_ok = True)
     params['predicted_path'] = os.path.join(params['predicted_path'], params['pref'])
     os.makedirs(params['predicted_path'], exist_ok = True)
     params['metrics_path'] = os.path.join(params['metrics_path'], params['pref'])
     os.makedirs(params['metrics_path'], exist_ok = True)
 
+    if params['data'] == "none":
+        print("Data is none. Must be specified.")
+
+    # extract date of flight used
+    match = re.search(r"(\d{6})_(\d{6})", params['data'])
+
+    if match:
+        date_part = match.group(1)
+
+        # formatting the date
+        formatted_date = f"20{date_part[:2]}-{date_part[2:4]}-{date_part[4:]}"
+        print(f"The date in the filename is: {formatted_date}")
+
+        params['preprocessed_path'] = os.path.join(params['preprocessed_path'], date_part)
+        os.makedirs(params['preprocessed_path'], exist_ok = True)
+
+    else:
+        print("Date not found in the filename.")
+
     # extract model architecture from weights_path
-    model_arch = os.path.basename(os.path.dirname(params['weights_path']))
+    folders= os.path.dirname(params['weights_path']).split('/')
+    model_arch = folders[1] 
+    print(model_arch)
+    print(type(model_arch))
     print("Model architecture used: ".format(model_arch))
 
     if not params['skip_prediction']:
 
         if not params['skip_preprocessing']:
-
-            # extract date of flight used
-            match = re.search(r"(\d{6})_(\d{6})", params['data'])
-
-            if match:
-                date_part = match.group(1)
-                time_part = match.group(2)
-
-                # formatting the date
-                formatted_date = f"20{date_part[:2]}-{date_part[2:4]}-{date_part[4:]}"
-                print(f"The date in the filename is: {formatted_date}")
-            else:
-                print("Date not found in the filename.")
 
             # load data and store as images
             # use whole path when abs path is given, else use data from 'data/prediction/raw'

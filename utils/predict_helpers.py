@@ -156,6 +156,9 @@ def predict_image(img, im_size, weights, arch='unet', backbone='resnet34', train
     elif arch=='att_unet':
         model = sm.Unet(BACKBONE, input_shape=(im_size, im_size, 3), classes=3, activation='softmax', encoder_weights=TRAIN_TRANSFER, decoder_add_attention=True)
 
+    elif arch=='psp_net':
+        model = sm.PSPNet(BACKBONE, input_shape=(im_size, im_size, 3), classes=3, activation='softmax', encoder_weights=TRAIN_TRANSFER)
+
     model.load_weights(WEIGHTS)
 
     if smooth:

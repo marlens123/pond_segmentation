@@ -125,8 +125,10 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
 
     # when in fine-tuning, save weights of best performing model in terms of minimal val_loss
     else:
+        weights_path = './weights/{}/'.format(model_arch)
+        os.makedirs(weights_path, exist_ok = True)
         callbacks = [
-            keras.callbacks.ModelCheckpoint('./weights/{0}/best_model{1}.h5'.format(model_arch, pref), save_weights_only=True, save_best_only=True, mode='min'),
+            keras.callbacks.ModelCheckpoint(os.path.join(weights_path, 'best_model{1}.h5'.format(model_arch, pref)), save_weights_only=True, save_best_only=True, mode='min'),
             tf.keras.callbacks.CSVLogger('./metrics/scores/{0}/{1}.csv'.format(training_mode, pref)),
         ]
 
