@@ -1,3 +1,13 @@
+"""
+MISSING:
+
+- pass flight number
+- goodness measure that determines if a given pseudo-label will be added to training data
+
+"""
+
+
+
 import sys
 import os
 
@@ -9,11 +19,6 @@ import numpy as np
 import cv2
 import argparse
 
-#######################################################################
-#######################################################################
-flight_nr = None
-#######################################################################
-#######################################################################
 
 parser = argparse.ArgumentParser()
 

@@ -1,3 +1,9 @@
+"""
+NOT UP-TO-DATE!
+
+"""
+
+
 #### same process as fine_tune.py but with early fusion of vis and ir images
 #### expects vis and ir images to be aligned and in the same shape
 #### disabled offline augmentation for now

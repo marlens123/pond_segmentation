@@ -1,8 +1,8 @@
 # Detection of Melt Ponds on Arctic Sea Ice from Infrared Images
 
 This repository develops a segmentation tool that partitions helicopter-borne thermal infrared (TIR) images into sea ice, melt pond, and ocean classes. 
-The data used were aquired during the PSP131 ATWAICE campaign [1]. All training images and masks can be investigated in ```preprocess_training.ipynb```.
-Most results presented in this repository are based on using a pre-trained U-net with ResNet34 backbone, used in my thesis. Current work focusses on early fusion of TIR with corresponding VIS images (```experimental/```) and exploring different architectures (```config/att_unet``` and ```experimental/segmenter.py```).
+The data used were aquired during the PSP131 ATWAICE campaign [1]. Labeled training images can be investigated in ```preprocess_training.ipynb```.
+Most results presented in this repository are based on a pre-trained U-net with ResNet34 backbone, as used in my thesis. The architecture can be changed to U-net with attention decoder or PSP-net. Current work focusses on investigating semi-supervised segmentation (```experimental/semi_supervised/```) and early fusion of TIR with corresponding VIS images (```experimental/vis_ir_fusion/```).
 
 The data used is not published yet.
 
@@ -36,7 +36,7 @@ This code requires Python 3.10. Install the required packages using ```pip insta
 If you want to use the current optimized model to segment images and extract melt pond fraction for a specific flight:
 
 - Insert the respective ```netCDF``` file into ```data/prediction/raw/```.
-- Run ```python predict.py --pref [pref_name] --data [name_of_netCDF_file]```. To be able to inspect prediction results as grayscale images, add ```--convert_to_grayscale``` (leave out if you have limited storage). If you don't want to use basic unet for prediction, specify ```weights_path [relative_path_to_weights]```.
+- Run ```python predict.py --pref [pref_name] --data [name_of_netCDF_file]```. To be able to inspect prediction results as grayscale images, add ```--convert_to_grayscale``` (leave out if you have limited storage). If you don't want to use the basic U-net for prediction, specify ```weights_path [relative_path_to_weights]```. For options see ```weights/```.
 - Predicted images can be found in ```data/prediction/predicted/```. The resulting melt pond fraction can be found in ```metrics/melt_pond_fraction/```.
 
 So far, melt pond fraction results are only exemplary because of insufficient model performance.
@@ -44,7 +44,7 @@ So far, melt pond fraction results are only exemplary because of insufficient mo
 #### Training
 To fine-tune the model:
 
-- Run ```python fine_tune.py --pref [pref_name]```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/training/``` and hyperparameter setting defined in ```config/best_unet.json``` will be used.
+- Run ```python fine_tune.py --pref [pref_name]```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/training/flight9_flight16/``` and hyperparameter setting defined in ```config/best_unet.json``` will be used.
 - Evaluation scores can be found in ```metrics/scores/[pref_name].csv```. Resulting model weights can be found in ```weights/best_model[pref_name].h5```.
 
 #### Hyperparameter Tuning
@@ -59,7 +59,7 @@ This repository covers annotation, preprocessing, training, hyperparameter optim
 
 ```extract_and_annotate.ipynb```: image extraction and preparation for annotation.
 
-```preprocess_training.ipynb```: image and mask preprocessing to reproduce current training data (stored in ```data/training/```).
+```preprocess_training.ipynb```: image and mask preprocessing to reproduce current training data (stored in ```data/training/flight9_flight16/```).
 
 ```prediction_sample.ipynb```: inference examples for different patch size scenarios.
 

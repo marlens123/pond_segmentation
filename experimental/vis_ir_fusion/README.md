@@ -31,4 +31,4 @@ Questions:
 
 - How to concatenate information: simple concatenation across channel dimension would result in 4-channel input --> is that still suitable for backbones that are trained on ImageNet aka RGB input?
 
-- How to make image alignment faster (!)
+- How to make image alignment faster (!!!)
