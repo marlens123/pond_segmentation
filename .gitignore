@@ -163,5 +163,5 @@ cython_debug/
 wandb/
 
 # data
-.png
-.nc
+*.png
+*.nc
