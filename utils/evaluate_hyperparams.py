@@ -44,6 +44,9 @@ def main():
 
     wandb = params['use_wandb']
 
+    if cfg_model['dropout'] == 0:
+        cfg_model['dropout'] = None
+
     # load data
     X = np.load(params['X'])
     y = np.load(params['y'])
@@ -60,11 +63,15 @@ def main():
     # construct model
     if cfg_model['architecture'] == 'base_unet':
         model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
-                        decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'])  
+                        dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze'])  
    
     elif cfg_model['architecture'] == 'att_unet':
         model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
-                        decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'], decoder_add_attention=True)  
+                        dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze'], decoder_add_attention=True)  
+
+    elif cfg_model['architecture'] == 'psp_net':
+        model = sm.PSPNet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
+                        dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze']) 
 
     print(model.summary())
 

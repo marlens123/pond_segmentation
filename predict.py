@@ -84,6 +84,7 @@ def main():
         # extract surface masks from images
         for idx, file in enumerate(os.listdir(params['preprocessed_path'])):
             os.makedirs(os.path.join(params['predicted_path'], 'raw/'), exist_ok = True)
+
             if file.endswith('.png'):
                 img = cv2.imread(os.path.join(params['preprocessed_path'], file), 0)
                 predict_image(img, 480, params['weights_path'], arch=model_arch, backbone='resnet34', train_transfer='imagenet', save_path=os.path.join(params['predicted_path'],'raw/{}.png'.format(idx)), visualize=False)
@@ -91,6 +92,7 @@ def main():
     # optionally convert to grascale images for visibility
     if params['convert_to_grayscale']:
         os.makedirs(os.path.join(params['predicted_path'], 'grayscale/'), exist_ok = True)
+
         for idx, file in enumerate(os.listdir(os.path.join(params['predicted_path'],'raw/'))):
             im = label_to_pixelvalue(cv2.imread(os.path.join(params['predicted_path'],'raw/', file)))
             cv2.imwrite(os.path.join(params['predicted_path'],'grayscale/{}.png'.format(idx)), im)
@@ -98,7 +100,7 @@ def main():
 
     # optionally calculate melt pond fraction and store in csv file
     if not params['skip_mpf']:
-        mpf = calculate_mpf(params['predicted_path'])
+        mpf = calculate_mpf(os.path.join(params['predicted_path'], 'raw/'))
 
         headers = ['flight_date', 'melt_pond_fraction']
 

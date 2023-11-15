@@ -159,7 +159,7 @@ def build_psp(
 
 def PSPNet(
         backbone_name='vgg16',
-        input_shape=(384, 384, 3),
+        input_shape=(None, None, 3),
         classes=21,
         activation='softmax',
         weights=None,
@@ -169,7 +169,7 @@ def PSPNet(
         psp_conv_filters=512,
         psp_pooling_type='avg',
         psp_use_batchnorm=True,
-        psp_dropout=None,
+        dropout=None,
         **kwargs
 ):
     """PSPNet_ is a fully convolution neural network for image semantic segmentation
@@ -191,7 +191,7 @@ def PSPNet(
         psp_pooling_type: one of 'avg', 'max'. PSP block pooling type (maximum or average).
         psp_use_batchnorm: if ``True``, ``BatchNormalisation`` layer between ``Conv2D`` and ``Activation`` layers
                 is used.
-        psp_dropout: dropout rate between 0 and 1.
+        dropout: dropout rate between 0 and 1.
 
     Returns:
         ``keras.models.Model``: **PSPNet**
@@ -235,7 +235,7 @@ def PSPNet(
         final_upsampling_factor=downsample_factor,
         classes=classes,
         activation=activation,
-        dropout=psp_dropout,
+        dropout=dropout,
     )
 
     # lock encoder weights for fine-tuning

@@ -6,7 +6,7 @@
       "classes": 3,
       "activation": "softmax",
       "pretrain": "imagenet",
-      "use_dropout": true,
+      "dropout": 0.5,
       "freeze": true
     },
     "augmentation": {
