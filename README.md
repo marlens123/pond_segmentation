@@ -2,7 +2,7 @@
 
 This repository develops a segmentation tool that partitions helicopter-borne thermal infrared (TIR) images into sea ice, melt pond, and ocean classes. 
 The data used were aquired during the PSP131 ATWAICE campaign [1]. Labeled training images can be investigated in ```preprocess_training.ipynb```.
-Most results presented in this repository are based on a pre-trained U-net with ResNet34 backbone, as used in my thesis. The architecture can be changed to U-net with attention decoder or PSP-net. Current work focusses on investigating semi-supervised segmentation (```experimental/semi_supervised/```) and early fusion of TIR with corresponding VIS images (```experimental/vis_ir_fusion/```).
+The current approach uses a pre-trained Attention-U-net with ResNet34 backbone. The architecture can be changed to a basic U-net or PSP-net. Current work focusses on investigating semi-supervised segmentation (```experimental/semi_supervised/```) and early fusion of TIR with corresponding VIS images (```experimental/vis_ir_fusion/```).
 
 The data used is not published yet.
 
