@@ -63,6 +63,8 @@ This repository covers annotation, preprocessing, training, hyperparameter optim
 
 ```prediction_sample.ipynb```: inference examples for different patch size scenarios.
 
+```config/```: Configuration files to set hyperparameters for training.
+
 ```data/```: data container.
 
 ```docs/```: annotation documentation.
