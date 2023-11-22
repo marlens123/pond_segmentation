@@ -34,6 +34,9 @@ def main():
     if params['data'] == "none":
         print("Data is none. Must be specified.")
 
+    id = params['data'].split('/')[3]
+    print(id)
+
     # extract date of flight used
     match = re.search(r"(\d{6})_(\d{6})", params['data'])
 
@@ -44,49 +47,48 @@ def main():
         formatted_date = f"20{date_part[:2]}-{date_part[2:4]}-{date_part[4:]}"
         print(f"The date in the filename is: {formatted_date}")
 
-        params['preprocessed_path'] = os.path.join(params['preprocessed_path'], date_part)
+        params['preprocessed_path'] = os.path.join(params['preprocessed_path'], id)
         os.makedirs(params['preprocessed_path'], exist_ok = True)
 
     else:
         print("Date not found in the filename.")
 
     # extract model architecture from weights_path
-    folders= os.path.dirname(params['weights_path']).split('/')
-    model_arch = folders[1] 
+    model_arch = params['weights_path'].split('/')[1]
     print(model_arch)
     print(type(model_arch))
     print("Model architecture used: ".format(model_arch))
 
+    if not params['skip_preprocessing']:
+
+        # load data and store as images
+        # use whole path when abs path is given, else use data from 'data/prediction/raw'
+        if '/' in params['data']:
+            ds = netCDF4.Dataset(params['data'])
+            print("Abs path is used.")
+        else:
+            ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
+            print("Rel path is used.")
+        imgs = ds.variables['Ts'][:]
+
+        tmp = []
+
+        for im in imgs:
+            im = crop_center_square(im)
+            tmp.append(im)
+
+        imgs = tmp
+
+        print("Start extracting images...")
+
+        # extract only every 4th image to avoid overlap
+        for idx, img in enumerate(imgs):
+            if(idx % 4 == 0):
+                plt.imsave(os.path.join(params['preprocessed_path'], '{}.png'.format(idx)), img, cmap='gray')
+
     if not params['skip_prediction']:
 
-        if not params['skip_preprocessing']:
-
-            # load data and store as images
-            # use whole path when abs path is given, else use data from 'data/prediction/raw'
-            if '/' in params['data']:
-                ds = netCDF4.Dataset(params['data'])
-                print("Abs path is used.")
-            else:
-                ds = netCDF4.Dataset(os.path.join('data/prediction/raw', params['data']))
-                print("Rel path is used.")
-            imgs = ds.variables['Ts'][:]
-
-            tmp = []
-
-            for im in imgs:
-                im = crop_center_square(im)
-                tmp.append(im)
-
-            imgs = tmp
-
-            print("Start extracting images...")
-
-            # extract only every 4th image to avoid overlap
-            for idx, img in enumerate(imgs):
-                if(idx % 4 == 0):
-                    plt.imsave(os.path.join(params['preprocessed_path'], '{}.png'.format(idx)), img, cmap='gray')
-
-            print("Start predicting images...")
+        print("Start predicting images...")
 
         # extract surface masks from images
         for idx, file in enumerate(os.listdir(params['preprocessed_path'])):
@@ -96,7 +98,7 @@ def main():
                 img = cv2.imread(os.path.join(params['preprocessed_path'], file), 0)
                 predict_image(img, 480, params['weights_path'], arch=model_arch, backbone='resnet34', train_transfer='imagenet', save_path=os.path.join(params['predicted_path'],'raw/{}.png'.format(idx)), visualize=False)
 
-    # optionally convert to grascale images for visibility
+    # optionally convert to grayscale images for visibility
     if params['convert_to_grayscale']:
         os.makedirs(os.path.join(params['predicted_path'], 'grayscale/'), exist_ok = True)
 
