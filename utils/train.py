@@ -15,7 +15,7 @@ import models.segmentation_models_qubvel as sm
 from wandb.keras import WandbMetricsLogger
 
 
-def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model, use_wandb=False, X_train_vis=None, 
+def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model, model_arch, use_wandb=False, X_train_vis=None, 
               X_test_vis=None, augmentation=None, class_weights=None, fold_no=None, training_mode='fine_tune'):
     """
     Training function.
@@ -36,6 +36,8 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
             stores num_epochs, loss, backbone, optimizer, batch_size, learning_rate
         model : keras.engine.functional.Functional
             model defined before call
+        model_arch : str
+            model architecture 
         use_wandb : Bool
             whether to use wandb for train monitoring
         augmentation : albumentations.core.composition.Compose
@@ -125,8 +127,10 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
 
     # when in fine-tuning, save weights of best performing model in terms of minimal val_loss
     else:
+        weights_path = './weights/{}/'.format(model_arch)
+        os.makedirs(weights_path, exist_ok = True)
         callbacks = [
-            keras.callbacks.ModelCheckpoint('./weights/best_model{}.h5'.format(pref), save_weights_only=True, save_best_only=True, mode='min'),
+            keras.callbacks.ModelCheckpoint(os.path.join(weights_path, 'best_model{1}.h5'.format(model_arch, pref)), save_weights_only=True, save_best_only=True, mode='min'),
             tf.keras.callbacks.CSVLogger('./metrics/scores/{0}/{1}.csv'.format(training_mode, pref)),
         ]
 

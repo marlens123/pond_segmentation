@@ -23,8 +23,8 @@ parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperpa
 parser.add_argument("--pref", default="ho_001", type=str, help="Identifier for the run. Model scores will be stored with this prefix.")
 
 # data
-parser.add_argument("--X", default="data/training/train_images.npy", type=str, help="Path to training images in .npy file format.")
-parser.add_argument("--y", default="data/training/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
+parser.add_argument("--X", default="data/training/flight9_flight16/train_images.npy", type=str, help="Path to training images in .npy file format.")
+parser.add_argument("--y", default="data/training/flight9_flight16/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
 
 # hyperparameters
 parser.add_argument("--path_to_config", default="config/hyperparameter_tune/patchsize_32.json", type=str, help="Path to config file that stores hyperparameter setting. For more information see 'config/README.md'.")
@@ -44,6 +44,9 @@ def main():
 
     wandb = params['use_wandb']
 
+    if cfg_model['dropout'] == 0:
+        cfg_model['dropout'] = None
+
     # load data
     X = np.load(params['X'])
     y = np.load(params['y'])
@@ -60,11 +63,15 @@ def main():
     # construct model
     if cfg_model['architecture'] == 'base_unet':
         model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
-                        decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'])  
+                        dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze'])  
    
     elif cfg_model['architecture'] == 'att_unet':
         model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
-                        decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'], decoder_add_attention=True)  
+                        dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze'], decoder_add_attention=True)  
+
+    elif cfg_model['architecture'] == 'psp_net':
+        model = sm.PSPNet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
+                        dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze']) 
 
     print(model.summary())
 
@@ -119,7 +126,7 @@ def main():
 
         # run training
         scores, history = run_train(pref=pref, X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, train_config=cfg_training,
-                    model=model, use_wandb=wandb, augmentation=on_fly, class_weights=class_weights, fold_no=fold_no, training_mode='hyperparameter_tune')
+                    model=model, model_arch=cfg_model['architecture'], use_wandb=wandb, augmentation=on_fly, class_weights=class_weights, fold_no=fold_no, training_mode='hyperparameter_tune')
 
         # store metrics for selecting the best values later
         val_loss_per_fold.append(scores[0])

@@ -14,10 +14,10 @@ parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperpa
 parser.add_argument("--pref", default="ft_001", type=str, help="Identifier for the run. Model scores will be stored with this prefix.")
 
 # data
-parser.add_argument("--path_to_X_train", default="data/training/train_images.npy", type=str, help="Path to training images in .npy file format.")
-parser.add_argument("--path_to_y_train", default="data/training/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
-parser.add_argument("--path_to_X_test", default="data/training/test_images.npy", type=str, help="Path to testing images in .npy file format.")
-parser.add_argument("--path_to_y_test", default="data/training/test_masks.npy", type=str, help="Path to testing masks in .npy file format.")
+parser.add_argument("--path_to_X_train", default="data/training/flight9_flight16/train_images.npy", type=str, help="Path to training images in .npy file format.")
+parser.add_argument("--path_to_y_train", default="data/training/flight9_flight16/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
+parser.add_argument("--path_to_X_test", default="data/training/flight9_flight16/test_images.npy", type=str, help="Path to testing images in .npy file format.")
+parser.add_argument("--path_to_y_test", default="data/training/flight9_flight16/test_masks.npy", type=str, help="Path to testing masks in .npy file format.")
 
 # hyperparameters
 parser.add_argument("--path_to_config", default="config/best_unet.json", type=str, help="Path to config file that stores hyperparameter setting. For more information see 'config/README.md'.")
@@ -38,6 +38,9 @@ def main():
     cfg_training = cfg['training']
 
     wandb = params['use_wandb']
+
+    if cfg_model['dropout'] == 0:
+        cfg_model['dropout'] = None
 
     # load data
     train_images = np.load(params['path_to_X_train'])
@@ -73,11 +76,15 @@ def main():
     # construct model
     if cfg_model['architecture'] == 'unet':
         model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
-                        decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'])  
+                        dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze'])  
    
     elif cfg_model['architecture'] == 'att_unet':
         model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
-                        decoder_use_dropout=cfg_model['use_dropout'], encoder_freeze=cfg_model['freeze'], decoder_add_attention=True)  
+                        dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze'], decoder_add_attention=True)  
+
+    elif cfg_model['architecture'] == 'psp_net':
+        model = sm.PSPNet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
+                        dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze']) 
 
     print(model.summary())
 
@@ -99,7 +106,7 @@ def main():
 
     # run training
     _, _ = run_train(pref=params['pref'], X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, train_config=cfg_training,
-            model=model, use_wandb=wandb, augmentation=on_fly, class_weights=class_weights)
+            model=model, model_arch=cfg_model['architecture'], use_wandb=wandb, augmentation=on_fly, class_weights=class_weights)
 
     if wandb:
         wandb.join()

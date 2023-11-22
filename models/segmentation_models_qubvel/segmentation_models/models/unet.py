@@ -83,7 +83,7 @@ def Conv3x3BnReLU(filters, use_batchnorm, name=None):
     return wrapper
 
 
-def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False, use_dropout=False, add_attention=False):
+def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False, dropout=None, add_attention=False):
     up_name = 'decoder_stage{}_upsampling'.format(stage)
     conv1_name = 'decoder_stage{}a'.format(stage)
     conv2_name = 'decoder_stage{}b'.format(stage)
@@ -94,8 +94,8 @@ def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False, use_dropout=Fa
     def wrapper(input_tensor, skip=None):
         x = layers.UpSampling2D(size=2, name=up_name)(input_tensor)
 
-        if use_dropout:
-            x = Dropout(0.5)(x)
+        if dropout is not None:
+            x = Dropout(dropout)(x)
 
         if skip is not None:
             if add_attention:
@@ -112,7 +112,7 @@ def DecoderUpsamplingX2Block(filters, stage, use_batchnorm=False, use_dropout=Fa
     return wrapper
 
 
-def DecoderTransposeX2Block(filters, stage, use_batchnorm=False, use_dropout=False, add_attention=False):
+def DecoderTransposeX2Block(filters, stage, use_batchnorm=False, dropout=None, add_attention=False):
     transp_name = 'decoder_stage{}a_transpose'.format(stage)
     bn_name = 'decoder_stage{}a_bn'.format(stage)
     relu_name = 'decoder_stage{}a_relu'.format(stage)
@@ -132,8 +132,8 @@ def DecoderTransposeX2Block(filters, stage, use_batchnorm=False, use_dropout=Fal
             use_bias=not use_batchnorm,
         )(input_tensor)
 
-        if use_dropout:
-            x = Dropout(0.5)(x)
+        if dropout is not None:
+            x = Dropout(dropout)(x)
 
         if use_batchnorm:
             x = layers.BatchNormalization(axis=bn_axis, name=bn_name)(x)
@@ -167,7 +167,7 @@ def build_unet(
         classes=1,
         activation='sigmoid',
         use_batchnorm=True,
-        use_dropout=False,
+        dropout=None,
         add_attention=False
 ):
     input_ = backbone.input
@@ -190,7 +190,7 @@ def build_unet(
         else:
             skip = None
 
-        x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm, use_dropout=use_dropout, add_attention=add_attention)(x, skip)
+        x = decoder_block(decoder_filters[i], stage=i, use_batchnorm=use_batchnorm, dropout=dropout, add_attention=add_attention)(x, skip)
 
     # model head (define number of output classes)
     x = layers.Conv2D(
@@ -225,7 +225,7 @@ def Unet(
         decoder_block_type='upsampling',
         decoder_filters=(256, 128, 64, 32, 16),
         decoder_use_batchnorm=True,
-        decoder_use_dropout=False,
+        dropout=None,
         decoder_add_attention=False,
         **kwargs
 ):
@@ -254,7 +254,7 @@ def Unet(
         decoder_filters: list of numbers of ``Conv2D`` layer filters in decoder blocks
         decoder_use_batchnorm: if ``True``, ``BatchNormalisation`` layer between ``Conv2D`` and ``Activation`` layers
             is used.
-        decoder_use_dropout: if ``True``, ``Dropout`` layers after ``Upsampling`` layer is used.
+        dropout: sets dropout rate, if not None, ``Dropout`` layers after ``Upsampling`` layer is used.
 
     Returns:
         ``keras.models.Model``: **Unet**
@@ -295,7 +295,7 @@ def Unet(
         activation=activation,
         n_upsample_blocks=len(decoder_filters),
         use_batchnorm=decoder_use_batchnorm,
-        use_dropout=decoder_use_dropout,
+        dropout=dropout,
         add_attention=decoder_add_attention
     )
 
