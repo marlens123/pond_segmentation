@@ -3,6 +3,7 @@ import cv2
 import os
 from skimage.transform import resize
 import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
 
 def transform_color(image):
     """
@@ -84,3 +85,16 @@ def transform_masks(mask_path, save_path=None, im_size=(640,480)):
         if save_path is not None:
             cv2.imwrite(os.path.join(save_path, '{}.png'.format(idx)), crp_img)
         return crp_img
+    
+
+def train_val_test_split(ds):
+    """
+    Splits into training, validation and test set.
+    """
+
+    train_test_split 
+    length = ds.shape[0]
+
+
+
+def stack_samples(images, masks, sample_weights):

@@ -16,13 +16,13 @@
     },
     "training": {
       "use_class_weights": true,
-      "sample_weights_train": "none",
+      "sample_weights_train": "data/semi_super/weights_train.npy",
       "sample_weights_test": "none",
-      "num_epochs": 100,
+      "num_epochs": 300,
       "loss": "focal_dice",
       "backbone": "resnet34",
       "optimizer": "Adam",
-      "batch_size": 2
+      "batch_size": 8
     }
   }
   

@@ -14,16 +14,15 @@ parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperpa
 parser.add_argument("--pref", default="ft_001", type=str, help="Identifier for the run. Model scores will be stored with this prefix.")
 
 # data
-parser.add_argument("--path_to_X_train", default="data/training/flight9_flight16/train_images.npy", type=str, help="Path to training images in .npy file format.")
-parser.add_argument("--path_to_y_train", default="data/training/flight9_flight16/train_masks.npy", type=str, help="Path to training masks in .npy file format.")
-parser.add_argument("--path_to_X_test", default="data/training/flight9_flight16/test_images.npy", type=str, help="Path to testing images in .npy file format.")
-parser.add_argument("--path_to_y_test", default="data/training/flight9_flight16/test_masks.npy", type=str, help="Path to testing masks in .npy file format.")
+parser.add_argument("--path_to_X_train", default="data/semi_super/X_train.npy", type=str, help="Path to training images in .npy file format.")
+parser.add_argument("--path_to_y_train", default="data/semi_super/y_train.npy", type=str, help="Path to training masks in .npy file format.")
+parser.add_argument("--path_to_X_test", default="data/semi_super/X_test.npy", type=str, help="Path to testing images in .npy file format.")
+parser.add_argument("--path_to_y_test", default="data/semi_super/y_test.npy", type=str, help="Path to testing masks in .npy file format.")
 
 # hyperparameters
 parser.add_argument("--path_to_config", default="config/best_unet.json", type=str, help="Path to config file that stores hyperparameter setting. For more information see 'config/README.md'.")
 
 parser.add_argument("--use_wandb", action='store_true', help="Whether to use wandb for train monitoring.")
-
 
 
 def main():

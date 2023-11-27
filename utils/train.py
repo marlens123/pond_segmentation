@@ -55,6 +55,10 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
             generalization metrics and history of generalization metrics
     """
     
+    if train_config['sample_weights_train'] == 'none':
+        train_config['sample_weights_train'] = None
+
+
     CLASSES=['melt_pond', 'sea_ice']
     WEIGHTS = class_weights
     
@@ -66,6 +70,7 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
         classes=CLASSES, 
         augmentation=augmentation,
         preprocessing=get_preprocessing(sm.get_preprocessing(train_config['backbone'])),
+        sample_weights=train_config['sample_weights_train'],
     )
 
     # validation dataset
