@@ -88,7 +88,7 @@ Infrared imagery can be used to derive melt pond parameters and thermal properti
 ## Model Architecture
 <img scr="https://github.com/marlens123/ponds_extended/assets/80780236/84dde17c-6ecd-4608-af7f-7be75de84729" width="200">
 
-![model_architecture|50%](https://github.com/marlens123/ponds_extended/assets/80780236/84dde17c-6ecd-4608-af7f-7be75de84729)
+![architecture_att](https://github.com/marlens123/pond_segmentation/assets/80780236/680990df-89cf-45e9-bed7-a6e8e90ee791)
 
 ## Disclaimer
 The project is the extended version of my Bachelor thesis under the supervision of Dr. Gunnar Spreen ([Remote Sensing Group of Polar Regions](https://seaice.uni-bremen.de/research-group/), University of Bremen)
