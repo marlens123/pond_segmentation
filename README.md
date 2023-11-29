@@ -6,6 +6,8 @@ The current approach uses a pre-trained Attention-U-net with ResNet34 backbone. 
 
 The data used is not published yet.
 
+```data/training/```contains the original manually labeled dataset (16 training images). ```data/semi_super/```contains the dataset extended by pseudo-labeled model predictions (204 training images).
+
 ## Publications
 [Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to Bachelor thesis.
 
