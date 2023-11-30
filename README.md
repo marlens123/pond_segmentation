@@ -6,6 +6,8 @@ The current approach uses a pre-trained Attention-U-net with ResNet34 backbone. 
 
 The data used is not published yet.
 
+```data/training/```contains the original manually labeled dataset (16 training images). ```data/semi_super/```contains the dataset extended by pseudo-labeled model predictions (204 training images).
+
 ## Publications
 [Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to Bachelor thesis.
 
@@ -30,16 +32,14 @@ The data used is not published yet.
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
 
 ## Quickstart
-(Training data and model weights contained in this repository are tracked by LFS. To restore them, install git-lfs, run ```git lfs fetch``` and then ```git lfs checkout```).
+(Training data and model weights contained in this repository are tracked by Git LFS. To restore them, install Git LFS, run ```git lfs fetch``` and then ```git lfs checkout```).
 
 #### Prediction
 If you want to use the current optimized model to segment images and extract melt pond fraction for a specific flight:
 
 - Insert the respective ```netCDF``` file into ```data/prediction/raw/```.
-- Run ```python predict.py --pref [pref_name] --data [name_of_netCDF_file]```. To be able to inspect prediction results as grayscale images, add ```--convert_to_grayscale``` (leave out if you have limited storage). If you don't want to use the basic U-net for prediction, specify ```weights_path [relative_path_to_weights]```. For options see ```weights/```.
+- Run ```python predict.py --pref [pref_name] --data [name_of_netCDF_file]```. To be able to inspect prediction results as grayscale images, add ```--convert_to_grayscale```. If you want to switch model weights, specify ```weights_path [relative_path_to_weights]```. For options see ```weights/```.
 - Predicted images can be found in ```data/prediction/predicted/```. The resulting melt pond fraction can be found in ```metrics/melt_pond_fraction/```.
-
-So far, melt pond fraction results are only exemplary because of insufficient model performance.
 
 #### Training
 To fine-tune the model:
@@ -88,7 +88,10 @@ Infrared imagery can be used to derive melt pond parameters and thermal properti
 ## Model Architecture
 <img scr="https://github.com/marlens123/ponds_extended/assets/80780236/84dde17c-6ecd-4608-af7f-7be75de84729" width="200">
 
-![model_architecture|50%](https://github.com/marlens123/ponds_extended/assets/80780236/84dde17c-6ecd-4608-af7f-7be75de84729)
+![architecture_att](https://github.com/marlens123/pond_segmentation/assets/80780236/f7c59002-b034-4fc0-b010-dec8068261d6)
+
+<img src="[https://i.imgur.com/ZWnhY9T.png](https://github.com/marlens123/pond_segmentation/assets/80780236/f7c59002-b034-4fc0-b010-dec8068261d6)" width=50% height=50%>
+
 
 ## Disclaimer
 The project is the extended version of my Bachelor thesis under the supervision of Dr. Gunnar Spreen ([Remote Sensing Group of Polar Regions](https://seaice.uni-bremen.de/research-group/), University of Bremen)

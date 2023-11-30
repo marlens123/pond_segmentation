@@ -1,6 +1,13 @@
 # classes for data loading and preprocessing
 # Inspired by https://github.com/qubvel/segmentation_models/blob/master/examples/multiclass%20segmentation%20(camvid).ipynb 
 
+import sys
+import os
+
+# add parent directory to system path to be able to assess functions from root
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, parent_dir)
+
 import os
 import cv2
 import numpy as np
@@ -37,6 +44,7 @@ class Dataset:
             classes=None,
             augmentation=None, 
             preprocessing=None,
+            sample_weights=None,
     ):
         self.images_fps = images_ir.tolist()
         self.masks_fps = masks.tolist()
@@ -51,6 +59,8 @@ class Dataset:
 
         self.augmentation = augmentation
         self.preprocessing = preprocessing
+
+        self.sample_weights = sample_weights
     
     # return image / mask pair according to index
     def __getitem__(self, i):
@@ -94,7 +104,14 @@ class Dataset:
         print("Shape image: {}".format(image.shape))
         print("Shape mask: {}".format(mask.shape))
 
-        return image, mask
+        if not self.sample_weights == None:
+            sample_weights = np.load(self.sample_weights)
+            sample_weight = sample_weights[i]
+
+            return image, mask, sample_weight
+
+        else:
+            return image, mask
         
     def __len__(self):
         return len(self.images_fps)

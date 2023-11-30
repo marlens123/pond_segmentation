@@ -60,6 +60,13 @@ Explanation of most important config values.
 - **Type**: bool
 - **Possible Values**: true, false
 
+#### 'training.sample_weights_train'
+- **Description**: 
+- **Type**: str
+- **Possible Values**: path to sample weights, or 'none'
+
+#### 'training.sample_weights_test'
+
 #### 'training.num_epochs'
 - **Description**: Number of training epochs. The weights of the best performing training epoch will be stored.
 - **Type**: int
