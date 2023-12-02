@@ -17,7 +17,7 @@ import json
 
 import wandb
 
-parser = argparse.ArgumentParser(description="Model fine-tuning. Default hyperparameter values were optimized during previous experiments.")
+parser = argparse.ArgumentParser(description="Training pipeline with k-crossfold validation. Can be used for hyperparamter optimization.")
 
 # prefix
 parser.add_argument("--pref", default="ho_001", type=str, help="Identifier for the run. Model scores will be stored with this prefix.")
