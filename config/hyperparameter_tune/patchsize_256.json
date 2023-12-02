@@ -16,6 +16,8 @@
     },
     "training": {
       "use_class_weights": false,
+      "sample_weights_train": "none",
+      "sample_weights_test": "none",
       "num_epochs": 100,
       "loss": "categoricalCE",
       "backbone": "resnet34",
