@@ -45,7 +45,7 @@ If you want to use the current optimized model to segment images and extract mel
 To fine-tune the model:
 
 - Run ```python fine_tune.py --pref [pref_name]```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/semi_super/``` and hyperparameter setting defined in ```config/semi_01.json``` will be used.
-- Evaluation scores can be found in ```metrics/scores/fine_tune/[pref_name].csv```. Resulting model weights can be found in ```weights/best_model[pref_name].h5```.
+- Evaluation scores can be found in ```metrics/scores/fine_tune/[pref_name].csv```. Resulting model weights can be found in ```weights/```.
 
 #### Hyperparameter Tuning
 In this work, hyperparameters have been investigated sequentially. To reproduce hyperparameter optimization using k-crossfold validation:
@@ -59,7 +59,7 @@ This repository covers annotation, preprocessing, training, hyperparameter optim
 
 ```extract_and_annotate.ipynb```: image extraction and preparation for annotation.
 
-```preprocess_training.ipynb```: image and mask preprocessing to reproduce current training data (stored in ```data/training/flight9_flight16/```).
+```preprocess_training.ipynb```: image and mask preprocessing to reproduce training data.
 
 ```prediction_sample.ipynb```: inference examples for different patch size scenarios.
 
@@ -78,7 +78,7 @@ This repository covers annotation, preprocessing, training, hyperparameter optim
 ```weights/```: weights of fine-tuned models.
 
 ## Interpretation of Results
-The test data set currently contains only two images and is unlikely to represent the training data distribution, not to mention the distribution of the real data. Therefore, numerical performance estimates should be considered with caution, and should be regarded in combination with qualitative results (```prediction_sample.ipynb```). Hyperparameter optimization was performed using k-crossfold validation to give a better decision base.
+The test data set is currently too small to represent the distribution of the real data. Therefore, numerical performance estimates should be considered with caution, and should be regarded in combination with qualitative results (```prediction_sample.ipynb```). Hyperparameter optimization was performed using k-crossfold validation to give a better decision base.
 
 ## Background
 Melt ponds are pools of water on Arctic sea ice that have a strong influence on the Arctic energy budget by increasing the amount of sunlight that is absorbed. 
