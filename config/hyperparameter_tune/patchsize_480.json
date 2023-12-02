@@ -1,6 +1,6 @@
 {
     "model": {
-      "architecture": "unet",
+      "architecture": "base_unet",
       "backbone": "resnet34",
       "im_size": 480,
       "classes": 3,
