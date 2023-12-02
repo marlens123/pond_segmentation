@@ -1,6 +1,6 @@
 {
     "model": {
-      "architecture": "att_unet",
+      "architecture": "psp_net",
       "backbone": "resnet34",
       "im_size": 480,
       "classes": 3,
@@ -16,7 +16,7 @@
     },
     "training": {
       "use_class_weights": true,
-      "sample_weights_train": "data/semi_super/weights_train.npy",
+      "sample_weights_train": "none",
       "sample_weights_test": "none",
       "num_epochs": 300,
       "loss": "focal_dice",
