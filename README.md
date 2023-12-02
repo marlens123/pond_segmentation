@@ -44,7 +44,7 @@ If you want to use the current optimized model to segment images and extract mel
 #### Training
 To fine-tune the model:
 
-- Run ```python fine_tune.py --pref [pref_name]```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/training/flight9_flight16/``` and hyperparameter setting defined in ```config/best_unet.json``` will be used.
+- Run ```python fine_tune.py --pref [pref_name]```, where ```pref_name``` will be used as identifier for the model weights and tracking. By default, the data in ```data/semi_super/``` and hyperparameter setting defined in ```config/semi_01.json``` will be used.
 - Evaluation scores can be found in ```metrics/scores/[pref_name].csv```. Resulting model weights can be found in ```weights/best_model[pref_name].h5```.
 
 #### Hyperparameter Tuning
