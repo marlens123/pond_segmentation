@@ -12,12 +12,12 @@ parser = argparse.ArgumentParser(description="Uses trained model to predict and 
 parser.add_argument("--pref", type=str, default="001", help="Identifier for the current prediction. Will be used as foldername to store results.")
 
 parser.add_argument("--data", default="none", type=str, help="Either: 1) Filename of netCDF data file. For this, data must be stored in 'data/prediction/raw'. Or: 2) Absolute path to netCDF data file. Then data must not be copied in advance.")
-parser.add_argument("--weights_path", default="weights/unet/best_modeltest_unet.h5", type=str, help="Path to model weights that should be used. Must contain the model architecture as second-to-last part of path (should be per default).")
+parser.add_argument("--weights_path", default="weights/att_unet/best_modeltest_att_unet.h5", type=str, help="Path to model weights that should be used. Must contain the model architecture as second-to-last part of path (should be per default).")
 parser.add_argument("--preprocessed_path", default="data/prediction/preprocessed", type=str, help="Path to folder that should store the preprocessed images.")
 parser.add_argument("--predicted_path", default="data/prediction/predicted", type=str, help="Path to folder that should store the predicted image masks.")
 parser.add_argument("--metrics_path", default="metrics/melt_pond_fraction/", type=str, help="Path to .csv file that should store the resulting mpf (if calculation is desired).")
 parser.add_argument("--skip_mpf", action="store_true", help="Skips the calculation of the melt pond fraction for the predicted flight.")
-parser.add_argument("--skip_preprocessing", action="store_true", help="Skips prediction process. Can be used to directly perform mpf calculation. In that case, 'predicted_path' must contain predicted images.")
+parser.add_argument("--skip_preprocessing", action="store_true", help="Skips preprocessing. Can be used to directly perform mpf calculation. In that case, 'predicted_path' must contain predicted images.")
 parser.add_argument("--skip_prediction", action="store_true", help="Skips prediction process. Can be used to directly perform mpf calculation. In that case, 'predicted_path' must contain predicted images.")
 parser.add_argument("--convert_to_grayscale", action="store_true", help="Converts predicted images to grayscale for visualization and stores in 'data/prediction/predicted/[pref]/grayscale'.")
 
