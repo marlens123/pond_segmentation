@@ -3,6 +3,9 @@ from patchify import patchify
 from skimage.util import view_as_windows
 from sklearn.feature_extraction import image
 from sklearn.utils import class_weight
+import matplotlib.pyplot as plt
+import pandas as pd
+import os
 
 def compute_class_weights(train_masks):
     masks_resh = train_masks.reshape(-1,1)
@@ -116,3 +119,43 @@ def patch_pipeline(imgs, masks, size):
     masks = np.array(mask_patches)
 
     return images, masks
+
+
+def plot_loss_iou(file_path, storage_path):
+
+    df = pd.read_csv(file_path)
+    id = file_path.split('/')[-1]
+
+    # summarize history for mean iou
+    plt.figure()
+    plt.plot(df['mean_iou'])
+    plt.plot(df['val_mean_iou'])
+    plt.title('mean iou')
+    plt.ylabel('iou')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+    plt.savefig(os.path.join(storage_path, '{}_mean_iou.png'.format(id)))
+
+    # summarize history for melt pond, sea ice and ocean iou
+    plt.figure()
+    plt.plot(df['val_sea_ice_iou'])
+    plt.plot(df['val_melt_pond_iou'])
+    plt.plot(df['val_ocean_iou'])
+    plt.title('per class validation iou')
+    plt.ylabel('iou')
+    plt.xlabel('epoch')
+    plt.legend(['sea_ice', 'melt_pond', 'ocean'], loc='upper left')
+    plt.show()
+    plt.savefig(os.path.join(storage_path, '{}_pc_iou.png'.format(id)))
+
+    # summarize history for loss
+    plt.figure()
+    plt.plot(df['loss'])
+    plt.plot(df['val_loss'])
+    plt.title('loss')
+    plt.ylabel('loss')
+    plt.xlabel('epoch')
+    plt.legend(['train', 'test'], loc='upper left')
+    plt.show()
+    plt.savefig(os.path.join(storage_path, '{}_loss.png'.format(id)))

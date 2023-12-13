@@ -94,7 +94,3 @@ def train_val_test_split(ds):
 
     train_test_split 
     length = ds.shape[0]
-
-
-
-def stack_samples(images, masks, sample_weights):
