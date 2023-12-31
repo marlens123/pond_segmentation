@@ -1,6 +1,6 @@
 # Detection of Melt Ponds on Arctic Sea Ice from Infrared Images
 
-[Link](https://github.com/marlens123/autoSAM_pond_segmentation) to AutoSAM implementation of this task (work in progress, but so far better prediction results). Other work focusses on enhancing the dataset (```experimental/semi_supervised/```) and fusion of TIR with corresponding VIS images (```experimental/vis_ir_fusion/```).
+*[Link](https://github.com/marlens123/autoSAM_pond_segmentation) to AutoSAM implementation of this task (work in progress, but so far better prediction results). Other work focusses on enhancing the dataset (```experimental/semi_supervised/```) and fusion of TIR with corresponding VIS images (```experimental/vis_ir_fusion/```).*
 
 This repository develops a segmentation tool that partitions helicopter-borne thermal infrared (TIR) images into sea ice, melt pond, and ocean classes. 
 The data used were aquired during the PSP131 ATWAICE campaign [1]. Labeled training images can be investigated in ```preprocess_training.ipynb```.
