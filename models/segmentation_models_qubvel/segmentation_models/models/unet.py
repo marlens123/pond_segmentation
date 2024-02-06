@@ -1,7 +1,7 @@
 """
-U-Net code adapted from (c) 2018, Pavel Yakubovskiy.
+Copyright (c) 2018, Pavel Yakubovskiy.
 
-Added Dropout layers and Attention blocks.
+Modifications: Added Dropout layers and Attention blocks.
 """
 
 from keras_applications import get_submodules_from_kwargs
