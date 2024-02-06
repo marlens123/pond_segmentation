@@ -36,7 +36,7 @@ def main():
     cfg_augmentation = cfg['augmentation']
     cfg_training = cfg['training']
 
-    wandb = params['use_wandb']
+    use_wandb = params['use_wandb']
 
     if cfg_model['dropout'] == 0:
         cfg_model['dropout'] = None
@@ -73,7 +73,7 @@ def main():
         cfg_model['pretrain'] = None
 
     # construct model
-    if cfg_model['architecture'] == 'unet':
+    if cfg_model['architecture'] == 'base_unet':
         model = sm.Unet(cfg_model['backbone'], input_shape=(cfg_model['im_size'], cfg_model['im_size'], 3), classes=cfg_model['classes'], activation=cfg_model['activation'], encoder_weights=cfg_model['pretrain'],
                         dropout=cfg_model['dropout'], encoder_freeze=cfg_model['freeze'])  
    
@@ -87,7 +87,7 @@ def main():
 
     print(model.summary())
 
-    if wandb:
+    if use_wandb:
         wandb.login()
         run = wandb.init(project='pond_segmentation',
                             group=params['pref'],
@@ -105,7 +105,7 @@ def main():
 
     # run training
     _, _ = run_train(pref=params['pref'], X_train_ir=X_train, y_train=y_train, X_test_ir=X_test, y_test=y_test, train_config=cfg_training,
-            model=model, model_arch=cfg_model['architecture'], use_wandb=wandb, augmentation=on_fly, class_weights=class_weights)
+            model=model, model_arch=cfg_model['architecture'], use_wandb=use_wandb, augmentation=on_fly, class_weights=class_weights)
 
     if wandb:
         wandb.join()
