@@ -20,6 +20,7 @@ parser.add_argument("--skip_mpf", action="store_true", help="Skips the calculati
 parser.add_argument("--skip_preprocessing", action="store_true", help="Skips preprocessing. Can be used to directly perform mpf calculation. In that case, 'predicted_path' must contain predicted images.")
 parser.add_argument("--skip_prediction", action="store_true", help="Skips prediction process. Can be used to directly perform mpf calculation. In that case, 'predicted_path' must contain predicted images.")
 parser.add_argument("--convert_to_grayscale", action="store_true", help="Converts predicted images to grayscale for visualization and stores in 'data/prediction/predicted/[pref]/grayscale'.")
+parser.add_argument("--val_predict", default=False, action='store_true', help="to be activated when predicting validation imgs")
 
 def main():
     args = parser.parse_args()
@@ -47,7 +48,8 @@ def main():
         formatted_date = f"20{date_part[:2]}-{date_part[2:4]}-{date_part[4:]}"
         print(f"The date in the filename is: {formatted_date}")
 
-        params['preprocessed_path'] = os.path.join(params['preprocessed_path'], id)
+        if not params['val_predict']:
+            params['preprocessed_path'] = os.path.join(params['preprocessed_path'], id)
         os.makedirs(params['preprocessed_path'], exist_ok = True)
 
     else:
@@ -93,18 +95,21 @@ def main():
         # extract surface masks from images
         for idx, file in enumerate(os.listdir(params['preprocessed_path'])):
             os.makedirs(os.path.join(params['predicted_path'], 'raw/'), exist_ok = True)
+            id = file.split('.')[0]
 
             if file.endswith('.png'):
                 img = cv2.imread(os.path.join(params['preprocessed_path'], file), 0)
-                predict_image(img, 480, params['weights_path'], arch=model_arch, backbone='resnet34', train_transfer='imagenet', save_path=os.path.join(params['predicted_path'],'raw/{}.png'.format(idx)), visualize=False)
+                print(model_arch)
+                predict_image(img, 480, params['weights_path'], arch=model_arch, backbone='resnet34', train_transfer='imagenet', save_path=os.path.join(params['predicted_path'],'raw/{}.png'.format(id)), visualize=False)
 
     # optionally convert to grayscale images for visibility
     if params['convert_to_grayscale']:
         os.makedirs(os.path.join(params['predicted_path'], 'grayscale/'), exist_ok = True)
 
         for idx, file in enumerate(os.listdir(os.path.join(params['predicted_path'],'raw/'))):
+            id = file.split('.')[0]
             im = label_to_pixelvalue(cv2.imread(os.path.join(params['predicted_path'],'raw/', file)))
-            cv2.imwrite(os.path.join(params['predicted_path'],'grayscale/{}.png'.format(idx)), im)
+            cv2.imwrite(os.path.join(params['predicted_path'],'grayscale/{}.png'.format(id)), im)
 
 
     # optionally calculate melt pond fraction and store in csv file
