@@ -137,6 +137,7 @@ def run_train(pref, X_train_ir, y_train, X_test_ir, y_test, train_config, model,
         callbacks = [
             keras.callbacks.ModelCheckpoint(os.path.join(weights_path, 'best_model{1}.h5'.format(model_arch, pref)), save_weights_only=True, save_best_only=True, mode='min'),
             tf.keras.callbacks.CSVLogger('./metrics/scores/{0}/{1}.csv'.format(training_mode, pref)),
+            tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=10, min_lr=0.00001, verbose=1)
         ]
 
     if use_wandb:

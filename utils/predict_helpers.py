@@ -151,6 +151,9 @@ def predict_image(img, im_size, weights, arch='unet', backbone='resnet34', train
     # unet
     if arch=='unet':
         model = sm.Unet(BACKBONE, input_shape=(im_size, im_size, 3), classes=3, activation='softmax', encoder_weights=TRAIN_TRANSFER)
+    
+    if arch=='base_unet':
+        model = sm.Unet(BACKBONE, input_shape=(im_size, im_size, 3), classes=3, activation='softmax', encoder_weights=TRAIN_TRANSFER)
    
     # attention unet
     elif arch=='att_unet':
