@@ -1,34 +1,6 @@
-# Detection of Melt Ponds on Arctic Sea Ice from Infrared Images
+# U-net Detection of Melt Ponds on Arctic Sea Ice from Infrared Images
 
-*[Link](https://github.com/marlens123/autoSAM_pond_segmentation) to AutoSAM implementation of this task (work in progress). Further work focusses on enhancing the dataset (```experimental/semi_supervised/```) and fusion of TIR with corresponding VIS images (```experimental/vis_ir_fusion/```).*
-
-This repository develops a segmentation tool that partitions helicopter-borne thermal infrared (TIR) images into sea ice, melt pond, and ocean classes. 
-The data used were aquired during the PSP131 ATWAICE campaign [1]. Labeled training images can be investigated in ```preprocess_training.ipynb```.
-The current approach uses a pre-trained Attention-U-net with ResNet34 backbone. The architecture can be changed to a basic U-net or PSP-net. 
-
-The data used is not published yet.
-
-```data/training/```contains the original manually labeled dataset (16 training images). ```data/semi_super/```contains the dataset extended by pseudo-labeled model predictions (204 training images).
-
-## Publications
-[Link](https://seaice.uni-bremen.de/proceedings-theses-reports/) to Bachelor thesis.
-
-[Link](https://te.ma/art/ut5cb0/reil-melting-ponds-arctic-sea/) to related essay.
-
-![pred_smpl](https://github.com/marlens123/pond_segmentation/assets/80780236/e0298018-ea2d-44a4-9711-a00b69464980)
-
-## Table of Contents
-1. [Setup](https://github.com/marlens123/pond_segmentation/blob/main/README.md#setup)
-2. [Quickstart](https://github.com/marlens123/pond_segmentation/blob/main/README.md#quickstart)
-   1. [Prediction](https://github.com/marlens123/pond_segmentation/blob/main/README.md#prediction)
-   2. [Training](https://github.com/marlens123/pond_segmentation/blob/main/README.md#training)
-   3. [Hyperparameter Tuning](https://github.com/marlens123/pond_segmentation/blob/main/README.md#hyperparameter-tuning)
-3. [Additional Files](https://github.com/marlens123/pond_segmentation/blob/main/README.md#additional-files)
-4. [Interpretation of Results](https://github.com/marlens123/pond_segmentation/blob/main/README.md#interpretation-of-results)
-5. [Background](https://github.com/marlens123/pond_segmentation/blob/main/README.md#background)
-6. [Model Architecture](https://github.com/marlens123/pond_segmentation/blob/main/README.md#model-architecture)
-9. [Disclaimer](https://github.com/marlens123/pond_segmentation/blob/main/README.md#disclaimer)
-8. [References](https://github.com/marlens123/pond_segmentation/blob/main/README.md#references)
+Weights of the model used in the paper can be found at ```weights/base_unet/best_model0302_u4.h5```.
 
 ## Setup
 This code requires Python 3.10. Install the required packages using ```pip install -r requirements.txt```.
@@ -78,29 +50,3 @@ This repository covers annotation, preprocessing, training, hyperparameter optim
 ```utils/```: functions needed for preprocessing, training, prediction.
 
 ```weights/```: weights of fine-tuned models.
-
-## Interpretation of Results
-The test data set is currently too small to represent the distribution of the real data. Therefore, numerical performance estimates should be considered with caution, and should be regarded in combination with qualitative results (```prediction_sample.ipynb```). Hyperparameter optimization was performed using k-crossfold validation to give a better decision base.
-
-## Background
-Melt ponds are pools of water on Arctic sea ice that have a strong influence on the Arctic energy budget by increasing the amount of sunlight that is absorbed. 
-Accurate quantitative analysis of melt ponds is important for improving Arctic climate model predictions.
-Infrared imagery can be used to derive melt pond parameters and thermal properties.
-
-## Model Architecture
-<img scr="https://github.com/marlens123/ponds_extended/assets/80780236/84dde17c-6ecd-4608-af7f-7be75de84729" width="200">
-
-![architecture_att](https://github.com/marlens123/pond_segmentation/assets/80780236/f7c59002-b034-4fc0-b010-dec8068261d6)
-
-<img src="[https://i.imgur.com/ZWnhY9T.png](https://github.com/marlens123/pond_segmentation/assets/80780236/f7c59002-b034-4fc0-b010-dec8068261d6)" width=50% height=50%>
-
-
-## Disclaimer
-The project is the extended version of my Bachelor thesis under the supervision of Dr. Gunnar Spreen ([Remote Sensing Group of Polar Regions](https://seaice.uni-bremen.de/research-group/), University of Bremen)
-and Dr. Ulf Krumnack ([Computer Vision Group](https://www.ikw.uni-osnabrueck.de/en/research_groups/computer_vision.html), University of Osnabrück).
-
-## References
-[1] Kanzow, Thorsten (2023). The Expedition PS131 of the Research Vessel POLARSTERN to the
-Fram Strait in 2022. Ed. by Horst Bornemann and Susan Amir Sawadkuhi. Bremerhaven. DOI: 10.57738/BzPM\_0770\_2023.
-
-**Contact**: mareil@uni-osnabrueck.de
