@@ -10,7 +10,7 @@
       "freeze": false
     },
     "augmentation": {
-      "design": "on_fly",
+      "design": "none",
       "technique": 4,
       "factor": 2
     },

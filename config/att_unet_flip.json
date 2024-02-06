@@ -11,7 +11,7 @@
     },
     "augmentation": {
       "design": "on_fly",
-      "technique": 4,
+      "technique": 0,
       "factor": 2
     },
     "training": {

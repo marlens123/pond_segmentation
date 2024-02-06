@@ -6,11 +6,11 @@
       "classes": 3,
       "activation": "softmax",
       "pretrain": "imagenet",
-      "dropout": 0.2,
+      "dropout": 0.5,
       "freeze": false
     },
     "augmentation": {
-      "design": "on_fly",
+      "design": "none",
       "technique": 4,
       "factor": 2
     },
@@ -18,7 +18,7 @@
       "use_class_weights": true,
       "sample_weights_train": "none",
       "sample_weights_test": "none",
-      "num_epochs": 100,
+      "num_epochs": 300,
       "loss": "focal_dice",
       "backbone": "resnet34",
       "optimizer": "Adam",
